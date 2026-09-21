@@ -91,6 +91,18 @@
   .chip.mat{background:transparent; border:1px dashed var(--line)}
   .chip.warn{background:var(--warn-soft); color:var(--warn)}
   .chip.date{background:var(--chip)}
+  .fields{margin-top:9px; display:flex; flex-direction:column; gap:7px}
+  .field{font-size:13px}
+  .flabel{font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted)}
+  .ftext{color:var(--ink); white-space:pre-wrap; margin-top:2px; line-height:1.45}
+  .add{color:var(--accent); font-weight:600; cursor:pointer; margin-left:6px}
+  .field.empty-field{cursor:pointer}
+  .checklist{margin-top:4px; display:flex; flex-direction:column; gap:5px}
+  .cli{display:flex; align-items:flex-start; gap:8px; cursor:pointer}
+  .clbox{flex:0 0 auto; width:18px; height:18px; border-radius:5px; border:2px solid var(--line); background:var(--card); display:flex; align-items:center; justify-content:center; font-size:11px; color:transparent; margin-top:1px}
+  .cli.on .clbox{background:var(--ok); border-color:var(--ok); color:#fff}
+  .cli.on .cltext{color:var(--muted); text-decoration:line-through}
+  .cltext{font-size:13px; line-height:1.4}
   .actions{margin-top:9px; display:flex; gap:6px; flex-wrap:wrap; align-items:center}
   .actions select{width:auto; flex:1; min-width:130px; font-size:13px; padding:7px 8px}
   .st{width:auto; flex:0 0 auto; min-width:118px; font-size:13px; padding:7px 8px}
@@ -297,6 +309,7 @@ function setupsInUse(){
   var set={}; state.contents.forEach(function(c){ if(c.setup) set[c.setup]=true; });
   return Object.keys(set).sort();
 }
+function splitPipe(s){ return String(s||"").split("|").map(function(x){return x.trim();}).filter(Boolean); }
 
 /* ---------- Devinette de setup ---------- */
 function medium(type){
@@ -392,7 +405,7 @@ function importCSV(text, replace){
       id:uid(), type:type||"", titre:titre, pilier:get(r,cols.pilier),
       setup:setup, datePub:get(r,cols.date), duree:defaultDurFor(type),
       plan:get(r,cols.plan), materiel:get(r,cols.mat), note:note,
-      statut:statut, slotId:null
+      statut:statut, slotId:null, planDone:[], matDone:[]
     });
   });
   if(!added.length){ toast("Aucun contenu détecté"); return; }
@@ -411,10 +424,10 @@ function exampleCSV(){
   var bom="\uFEFF";
   var lines=[
     "type;titre;pilier;visuel;legende;cta;date;statut;notes;plan;materiel",
-    "Reel;Gros plan atelier;Atelier;;;;2026-10-15;;Des mains, de la laine, un objet. Montage rythme mains matiere.;Plan large + gros plan mains + produit fini;Laine, aiguilles, fond neutre",
-    "Reel;Commence un livre avec moi;Loin du Scroll;;;;2026-10-01;;B-roll lecture cosy, plaid, the, pas de face cam.;Plan plaid + tasse + livre ouvert;Plaid, tasse, livre, bougie",
-    "Carrousel;10 activites a ne pas regretter;Loin du Scroll;;;;2026-10-11;;Liste FOMO, une activite par slide.;;",
-    "Reel;My two moods;Produit;;;;2026-11-03;;Flat lay deux versions, les objets fait main dans chaque mood.;2 flat lays;Objets fait main, 2 fonds"
+    "Reel;Gros plan atelier;Atelier;;;;2026-10-15;;Des mains, de la laine, un objet.;Plan 1 (large atelier)|Plan 2 (macro mains)|Plan 3 (produit fini);Laine|Aiguilles|Fond neutre",
+    "Reel;Commence un livre avec moi;Loin du Scroll;;;;2026-10-01;;B-roll lecture cosy, plaid, the.;Plan 1 (plaid + tasse)|Plan 2 (livre ouvert)|Plan 3 (page tournee);Plaid|Tasse|Livre|Bougie",
+    "Carrousel;10 activites a ne pas regretter;Loin du Scroll;;;;2026-10-11;;Liste FOMO, une activite par slide.;Slide cover (photo automne);Appareil photo",
+    "Reel;My two moods;Produit;;;;2026-11-03;;Flat lay deux versions.;Plan 1 (mood 1)|Plan 2 (mood 2);Objets fait main|2 fonds"
   ];
   return bom+lines.join("\r\n");
 }
@@ -491,14 +504,29 @@ function editHTML(c){
       + '<div><label class="fld">Date de publication</label><input type="date" data-f="datePub" value="'+esc(c.datePub)+'"></div>'
       + '<div><label class="fld">Statut</label><select data-f="statut">'+STATUTS.map(function(s){return '<option value="'+s.v+'"'+(c.statut===s.v?" selected":"")+'>'+s.l+'</option>';}).join("")+'</select></div>'
     + '</div>'
-    + '<label class="fld">Plan (déroulé des plans)</label><textarea data-f="plan" rows="2">'+esc(c.plan)+'</textarea>'
-    + '<label class="fld">Matériel</label><input data-f="materiel" value="'+esc(c.materiel)+'">'
-    + '<label class="fld">Notes</label><textarea data-f="note" rows="2">'+esc(c.note)+'</textarea>'
+    + '<label class="fld">Plan — un plan par « | »</label><textarea data-f="plan" rows="3" placeholder="Plan 1 (...)|Plan 2 (...)|Plan 3 (...)">'+esc(c.plan)+'</textarea>'
+    + '<label class="fld">Matériel — séparé par « | »</label><input data-f="materiel" value="'+esc(c.materiel)+'" placeholder="Laine|Aiguilles|Fond neutre">'
+    + '<label class="fld">Notes</label><textarea data-f="note" rows="3">'+esc(c.note)+'</textarea>'
     + '<div class="row" style="margin-top:12px">'
       + '<button class="btn" data-act="savecontent">Enregistrer</button>'
       + '<button class="btn line" data-act="canceledit">Annuler</button>'
     + '</div>'
   + '</div>';
+}
+function fieldHTML(label, value){
+  if(value && String(value).trim()) return '<div class="field"><div class="flabel">'+label+'</div><div class="ftext">'+esc(value)+'</div></div>';
+  return '<div class="field empty-field" data-act="edit"><span class="flabel">'+label+'</span><span class="add">＋ à définir</span></div>';
+}
+function checklistHTML(label, value, done, kind){
+  var items=splitPipe(value);
+  if(!items.length) return '<div class="field empty-field" data-act="edit"><span class="flabel">'+label+'</span><span class="add">＋ à définir</span></div>';
+  done=done||[];
+  var doneN=items.filter(function(_,i){return done.indexOf(i)>-1;}).length;
+  var rows=items.map(function(it,i){
+    var on=done.indexOf(i)>-1;
+    return '<div class="cli'+(on?" on":"")+'" data-act="'+kind+'" data-idx="'+i+'"><span class="clbox">✓</span><span class="cltext">'+esc(it)+'</span></div>';
+  }).join("");
+  return '<div class="field"><div class="flabel">'+label+' ('+doneN+'/'+items.length+')</div><div class="checklist">'+rows+'</div></div>';
 }
 function contentHTML(c){
   if(editingId===c.id){
@@ -510,11 +538,11 @@ function contentHTML(c){
   chips+='<span class="chip type">'+med.icon+' '+esc(c.type||med.label)+'</span>';
   if(c.setup) chips+='<span class="chip setup">📍 '+esc(c.setup)+'</span>';
   if(c.datePub) chips+='<span class="chip date">📅 '+esc(frDateShort(c.datePub))+'</span>';
-  if(c.materiel) chips+='<span class="chip mat">🎒 '+esc(c.materiel)+'</span>';
   chips+=deadlineWarn(c);
   return '<div class="'+cls+'" data-id="'+c.id+'">'
     + '<div class="item-title">'+esc(c.titre)+'</div>'
     + '<div class="meta">'+chips+'</div>'
+    + '<div class="fields">'+fieldHTML("Notes",c.note)+checklistHTML("Plan",c.plan,c.planDone,"plancheck")+checklistHTML("Matériel",c.materiel,c.matDone,"matcheck")+'</div>'
     + '<div class="actions">'
       + statutSelectHTML(c)
       + '<select data-act="move">'+slotSelectHTML(c.slotId)+'</select>'
@@ -579,7 +607,7 @@ function renderPlanning(){
     var cap=slotCapacity(sl), used=slotUsed(sl);
     var pct=cap?Math.min(100,Math.round(used/cap*100)):0;
     var setups={},mats={},nVid=0,nPho=0;
-    state.contents.forEach(function(c){ if(c.slotId===sl.id && isActive(c)){ if(c.setup) setups[c.setup]=true; if(c.materiel) mats[c.materiel]=true; var mm=medium(c.type).label; if(mm==="Vidéo")nVid++; else if(mm==="Photo")nPho++; } });
+    state.contents.forEach(function(c){ if(c.slotId===sl.id && isActive(c)){ if(c.setup) setups[c.setup]=true; splitPipe(c.materiel).forEach(function(m){ mats[m]=true; }); var mm=medium(c.type).label; if(mm==="Vidéo")nVid++; else if(mm==="Photo")nPho++; } });
     var medLine=(nVid?("🎥 "+nVid+" vidéo"+(nVid>1?"s":"")):"")+((nVid&&nPho)?" · ":"")+(nPho?("📷 "+nPho+" photo"+(nPho>1?"s":"")):"");
     html+='<div class="card'+(sl.indispo?" dim":"")+'">'
       + '<div class="slot-head"><span class="slot-title">'+esc(frDate(sl.date))+' · '+esc(sl.debut||"")+(sl.indispo?" (indispo)":"")+'</span>'
@@ -616,11 +644,14 @@ function switchTab(name){
 function findContent(id){ return state.contents.find(function(c){return c.id===id;}); }
 function saveEdit(id, box){
   var c=findContent(id); if(!c) return;
+  var oldPlan=c.plan, oldMat=c.materiel;
   box.querySelectorAll("[data-f]").forEach(function(el){
     var f=el.getAttribute("data-f");
     if(f==="duree"){ var v=parseInt(el.value,10); c.duree=v>0?v:defaultDurFor(c.type); }
     else c[f]=el.value.trim();
   });
+  if(c.plan!==oldPlan) c.planDone=[];
+  if(c.materiel!==oldMat) c.matDone=[];
   if(c.statut!=="a_filmer" && c.statut!=="filme") c.slotId=null;
   editingId=null; save(); renderAll(); toast("Modifié");
 }
@@ -689,7 +720,7 @@ function bind(){
   document.getElementById("hideFilme").addEventListener("change",function(e){ hideFilme=e.target.checked; renderPlanning(); });
   document.getElementById("addPlanBtn").addEventListener("click",function(){
     var titre=prompt("Titre du contenu :"); if(!titre) return;
-    var c={id:uid(),type:"Reel",titre:titre.trim(),pilier:"",setup:filterSetup||"À définir",datePub:"",duree:state.durReel,plan:"",materiel:"",note:"",statut:"a_filmer",slotId:null};
+    var c={id:uid(),type:"Reel",titre:titre.trim(),pilier:"",setup:filterSetup||"À définir",datePub:"",duree:state.durReel,plan:"",materiel:"",note:"",statut:"a_filmer",slotId:null,planDone:[],matDone:[]};
     state.contents.push(c); editingId=c.id; save(); renderPlanning(); switchTab("planning");
   });
 
@@ -702,6 +733,8 @@ function bind(){
     if(act==="edit"){ editingId=id; renderPlanning(); }
     else if(act==="canceledit"){ editingId=null; renderPlanning(); }
     else if(act==="savecontent"){ saveEdit(id, itemEl); }
+    else if(act==="plancheck"){ if(!c.planDone) c.planDone=[]; var pi=parseInt(el.getAttribute("data-idx"),10); var pk=c.planDone.indexOf(pi); if(pk>-1) c.planDone.splice(pk,1); else c.planDone.push(pi); save(); renderPlanning(); }
+    else if(act==="matcheck"){ if(!c.matDone) c.matDone=[]; var mi=parseInt(el.getAttribute("data-idx"),10); var mk=c.matDone.indexOf(mi); if(mk>-1) c.matDone.splice(mk,1); else c.matDone.push(mi); save(); renderPlanning(); }
     else if(act==="del"){ if(confirm("Supprimer « "+c.titre+" » ?")){ state.contents=state.contents.filter(function(x){return x.id!==id;}); save(); renderPlanning(); } }
   });
   pv.addEventListener("change",function(e){
