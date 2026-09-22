@@ -11,101 +11,43 @@
   :root{
     --bg:#f6f3ee; --card:#fffdf9; --ink:#2c2a26; --muted:#8a8378;
     --line:#e7e1d6; --accent:#b98a5e; --accent-soft:#efe4d6;
-    --ok:#5c8a5c; --ok-soft:#e2efe2; --warn:#c1663f; --warn-soft:#f6e2d8;
-    --chip:#efeae1;
-    box-sizing:border-box;
-    padding-top:env(safe-area-inset-top,0px);
-    padding-bottom:env(safe-area-inset-bottom,0px);
+    --ok:#5c8a5c; --warn:#c1663f; --warn-soft:#f6e2d8; --chip:#efeae1;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#1c1a17; --card:#26231f; --ink:#ece7de; --muted:#a49b8c;
-      --line:#3a352e; --accent:#cf9d6f; --accent-soft:#3a2f24;
-      --ok:#8bbf8b; --ok-soft:#2a3a2a; --warn:#e08b63; --warn-soft:#3d2a20;
-      --chip:#332e27;
+      --bg:#1c1a17; --card:#26231f; --ink:#ece7de; --muted:#a49b8c; --line:#3a352e;
+      --accent:#cf9d6f; --accent-soft:#3a2f24; --ok:#8bbf8b; --warn:#e08b63; --warn-soft:#3d2a20; --chip:#332e27;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#1c1a17; --card:#26231f; --ink:#ece7de; --muted:#a49b8c;
-    --line:#3a352e; --accent:#cf9d6f; --accent-soft:#3a2f24;
-    --ok:#8bbf8b; --ok-soft:#2a3a2a; --warn:#e08b63; --warn-soft:#3d2a20;
-    --chip:#332e27;
+    --bg:#1c1a17; --card:#26231f; --ink:#ece7de; --muted:#a49b8c; --line:#3a352e;
+    --accent:#cf9d6f; --accent-soft:#3a2f24; --ok:#8bbf8b; --warn:#e08b63; --warn-soft:#3d2a20; --chip:#332e27;
   }
   *{box-sizing:inherit}
   html,body{margin:0}
   html{scroll-padding-top:env(safe-area-inset-top,0px)}
-  body{
-    background:var(--bg); color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    font-size:16px; line-height:1.4; -webkit-font-smoothing:antialiased;
-  }
+  body{background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.4; -webkit-font-smoothing:antialiased}
   .wrap{max-width:640px; margin:0 auto; padding:0 16px 96px}
-  header{
-    position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
-    background:var(--bg); padding:14px 0 8px;
-  }
+  header{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); padding:14px 0 8px}
   h1{font-size:22px; margin:0 0 12px; font-weight:650; letter-spacing:-.01em}
   h1 .emo{margin-right:6px}
-  .tabs{display:flex; gap:6px; background:var(--chip); padding:4px; border-radius:12px}
-  .tabs button{
-    flex:1; border:0; background:transparent; color:var(--muted);
-    font-size:14px; font-weight:600; padding:8px 4px; border-radius:9px; cursor:pointer;
-  }
+  .tabs{display:flex; gap:5px; background:var(--chip); padding:4px; border-radius:12px}
+  .tabs button{flex:1; border:0; background:transparent; color:var(--muted); font-size:13px; font-weight:600; padding:8px 3px; border-radius:9px; cursor:pointer}
   .tabs button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.06)}
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:14px;
-    padding:14px; margin:12px 0;
-  }
-  .card.dim{opacity:.6}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin:12px 0}
+  .card.dim{opacity:.55}
   .card h2{font-size:15px; margin:0 0 10px; font-weight:650}
-  .muted{color:var(--muted)}
-  .small{font-size:13px}
+  .muted{color:var(--muted)} .small{font-size:13px}
   label.fld{display:block; font-size:13px; color:var(--muted); margin:10px 0 4px; font-weight:600}
-  input,select,textarea{
-    width:100%; font-size:16px; font-family:inherit; color:var(--ink);
-    background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px;
-  }
+  input,select,textarea{width:100%; font-size:16px; font-family:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px}
   textarea{resize:vertical}
-  .row{display:flex; gap:8px}
-  .row>*{flex:1; min-width:0}
-  button.btn{
-    border:0; border-radius:11px; padding:12px 14px; font-size:15px; font-weight:650;
-    cursor:pointer; background:var(--accent); color:#fff; width:100%;
-  }
+  .row{display:flex; gap:8px} .row>*{flex:1; min-width:0}
+  button.btn{border:0; border-radius:11px; padding:12px 14px; font-size:15px; font-weight:650; cursor:pointer; background:var(--accent); color:#fff; width:100%}
   button.btn.ghost{background:var(--accent-soft); color:var(--accent)}
   button.btn.line{background:transparent; color:var(--muted); border:1px solid var(--line)}
-  button.mini{
-    border:1px solid var(--line); background:var(--card); color:var(--muted);
-    border-radius:9px; padding:7px 10px; font-size:13px; font-weight:600; cursor:pointer;
-  }
+  button.mini{border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:9px; padding:7px 10px; font-size:13px; font-weight:600; cursor:pointer}
   .hidden{display:none}
-  .item{padding:11px 0; border-top:1px solid var(--line)}
-  .item:first-child{border-top:0}
-  .item-title{font-weight:600; word-wrap:break-word}
-  .item.filme .item-title{color:var(--ok)}
-  .item.reporte .item-title, .item.annule .item-title, .item.sans .item-title{color:var(--muted); text-decoration:line-through}
-  .meta{margin-top:4px; display:flex; flex-wrap:wrap; gap:6px; align-items:center}
-  .chip{font-size:12px; font-weight:600; padding:3px 8px; border-radius:20px; background:var(--chip); color:var(--muted)}
-  .chip.setup{background:var(--accent-soft); color:var(--accent)}
-  .chip.type{background:var(--chip); color:var(--ink)}
-  .chip.mat{background:transparent; border:1px dashed var(--line)}
-  .chip.warn{background:var(--warn-soft); color:var(--warn)}
-  .chip.date{background:var(--chip)}
-  .fields{margin-top:9px; display:flex; flex-direction:column; gap:7px}
-  .field{font-size:13px}
-  .flabel{font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted)}
-  .ftext{color:var(--ink); white-space:pre-wrap; margin-top:2px; line-height:1.45}
-  .add{color:var(--accent); font-weight:600; cursor:pointer; margin-left:6px}
-  .field.empty-field{cursor:pointer}
-  .checklist{margin-top:4px; display:flex; flex-direction:column; gap:5px}
-  .cli{display:flex; align-items:flex-start; gap:8px; cursor:pointer}
-  .clbox{flex:0 0 auto; width:18px; height:18px; border-radius:5px; border:2px solid var(--line); background:var(--card); display:flex; align-items:center; justify-content:center; font-size:11px; color:transparent; margin-top:1px}
-  .cli.on .clbox{background:var(--ok); border-color:var(--ok); color:#fff}
-  .cli.on .cltext{color:var(--muted); text-decoration:line-through}
-  .cltext{font-size:13px; line-height:1.4}
-  .actions{margin-top:9px; display:flex; gap:6px; flex-wrap:wrap; align-items:center}
-  .actions select{width:auto; flex:1; min-width:130px; font-size:13px; padding:7px 8px}
-  .st{width:auto; flex:0 0 auto; min-width:118px; font-size:13px; padding:7px 8px}
   .slot-head{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
   .slot-title{font-weight:650; font-size:15px}
   .cap{font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap}
@@ -114,22 +56,35 @@
   .bar>span{display:block; height:100%; background:var(--accent); width:0}
   .bar>span.over{background:var(--warn)}
   .sub{font-size:12px; color:var(--muted); margin-top:5px}
-  .empty{text-align:center; color:var(--muted); font-size:14px; padding:18px 8px}
-  .empty.small{padding:12px 8px; font-size:13px}
+  .grp{margin-top:12px}
+  .grp:first-of-type{margin-top:8px}
+  .grp-h{font-size:12px; font-weight:700; color:var(--accent); background:var(--accent-soft); display:inline-block; padding:3px 9px; border-radius:20px; margin-bottom:6px}
+  .plan{display:flex; align-items:flex-start; gap:9px; padding:8px 0; border-top:1px solid var(--line)}
+  .plan:first-child{border-top:0}
+  .box{flex:0 0 auto; width:22px; height:22px; border-radius:6px; border:2px solid var(--line); background:var(--card); display:flex; align-items:center; justify-content:center; font-size:13px; color:transparent; cursor:pointer; margin-top:1px}
+  .box.on{background:var(--ok); border-color:var(--ok); color:#fff}
+  .pbody{flex:1; min-width:0}
+  .ptext{font-weight:500; word-wrap:break-word}
+  .plan.done .ptext{text-decoration:line-through; color:var(--muted)}
+  .plabel{font-size:12px; color:var(--muted); margin-top:2px}
+  .pchip{font-size:11px; font-weight:600; padding:2px 7px; border-radius:20px; background:var(--chip); color:var(--muted); white-space:nowrap}
+  .pchip.warn{background:var(--warn-soft); color:var(--warn)}
+  .pctrl{margin-top:7px; display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+  .pctrl select{width:auto; flex:1; min-width:120px; font-size:13px; padding:6px 8px}
+  .pctrl .dur{width:58px; flex:0 0 auto; font-size:13px; padding:6px; text-align:center}
   .toolbar{display:flex; gap:8px; align-items:center; margin:2px 0 4px}
   .toolbar select{flex:1; font-size:13px; padding:8px}
   .progress{font-size:13px; color:var(--muted); margin-top:8px}
   .switch{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-top:8px}
   .switch input{width:auto}
-  .editbox{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line)}
+  .empty{text-align:center; color:var(--muted); font-size:14px; padding:18px 8px}
+  .empty.small{padding:12px 8px; font-size:13px}
+  .rtitle{font-weight:650; font-size:15px}
+  .planline{display:flex; gap:6px; align-items:center; margin-top:6px}
+  .planline input{font-size:14px; padding:8px}
+  .planline .pt{flex:2} .planline .ps{flex:1; min-width:90px}
   code{background:var(--chip); padding:1px 5px; border-radius:5px; font-size:13px}
-  a{color:var(--accent)}
-  .toast{
-    position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px));
-    transform:translateX(-50%); background:var(--ink); color:var(--bg);
-    padding:10px 16px; border-radius:12px; font-size:14px; font-weight:600;
-    opacity:0; transition:opacity .2s; z-index:50; pointer-events:none; max-width:90%; text-align:center;
-  }
+  .toast{position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:12px; font-size:14px; font-weight:600; opacity:0; transition:opacity .2s; z-index:50; pointer-events:none; max-width:90%; text-align:center}
   .toast.show{opacity:.95}
 </style>
 </head>
@@ -141,6 +96,7 @@
       <button data-tab="import" class="on">Import</button>
       <button data-tab="creneaux">Créneaux</button>
       <button data-tab="planning">Planning</button>
+      <button data-tab="reels">Réels</button>
     </div>
   </header>
 
@@ -148,35 +104,22 @@
   <section id="tab-import">
     <div class="card">
       <h2>Charger mon calendrier</h2>
-      <p class="small muted" style="margin:0 0 10px">CSV point-virgule (ton export calendrier éditorial). Une ligne = un contenu.</p>
+      <p class="small muted" style="margin:0 0 10px">CSV point-virgule. La colonne <code>plan</code> = les prises séparées par « | ». La colonne <code>materiel</code> aussi.</p>
       <input type="file" id="csvFile" accept=".csv,text/csv">
-      <div class="switch">
-        <input type="checkbox" id="replaceCsv" checked>
-        <label for="replaceCsv" style="margin:0">Remplacer les contenus existants</label>
-      </div>
+      <div class="switch"><input type="checkbox" id="replaceCsv" checked><label for="replaceCsv" style="margin:0">Remplacer l'existant</label></div>
       <div id="csvInfo" class="small muted" style="margin-top:10px"></div>
     </div>
-
     <div class="card">
-      <h2>Ce que l'outil lit</h2>
-      <p class="small muted" style="margin:0 0 8px">
-        Colonnes reconnues : <code>type</code> · <code>titre</code> · <code>pilier</code> · <code>date</code> · <code>statut</code> · <code>notes</code> · <code>plan</code> · <code>materiel</code>. Les autres colonnes sont ignorées.
-      </p>
-      <p class="small muted" style="margin:0 0 10px">
-        À l'import, l'outil <b>devine un setup</b> (atelier, flat lay produit, salon cosy…) pour les reels comme pour les carrousels. Les carrousels sont des prises photo, les reels de la vidéo, mais un même setup les regroupe (photo tissu + reel atelier = même session). À toi de marquer « sans tournage » un contenu qui n'a vraiment rien à capturer.
-      </p>
+      <h2>Comment ça organise</h2>
+      <p class="small muted" style="margin:0 0 8px">Chaque <b>plan</b> devient une prise à filmer. L'outil devine son <b>setup</b> (atelier, salon cosy, flat lay…) d'après son texte, puis regroupe tous les plans du même setup dans un même créneau — quel que soit le réel. Le réel s'affiche en étiquette.</p>
+      <p class="small muted" style="margin:0 0 10px">Les dates de publication servent d'échéances : un plan est calé dans un créneau avant la date de pub de son réel.</p>
       <button class="btn ghost" id="dlExample">Télécharger un exemple</button>
     </div>
-
     <div class="card">
-      <h2>Durées par défaut (min)</h2>
-      <p class="small muted" style="margin:0 0 4px">Utilisées quand aucune durée n'est précisée. Modifiable par contenu.</p>
-      <div class="row">
-        <div><label class="fld" for="durReel">Reel</label><input type="number" id="durReel" min="1" value="30"></div>
-        <div><label class="fld" for="durCarr">Carrousel</label><input type="number" id="durCarr" min="1" value="20"></div>
-        <div><label class="fld" for="durAutre">Autre</label><input type="number" id="durAutre" min="1" value="20"></div>
-      </div>
-      <button class="btn line" id="wipe" style="margin-top:14px">Tout effacer (contenus + créneaux)</button>
+      <h2>Réglages</h2>
+      <label class="fld" for="durPlan">Durée par plan (min)</label>
+      <input type="number" id="durPlan" min="1" value="10">
+      <button class="btn line" id="wipe" style="margin-top:14px">Tout effacer</button>
     </div>
   </section>
 
@@ -184,15 +127,13 @@
   <section id="tab-creneaux" class="hidden">
     <div class="card">
       <h2>Ajouter un créneau</h2>
-      <label class="fld" for="slDate">Jour</label>
-      <input type="date" id="slDate">
+      <label class="fld" for="slDate">Jour</label><input type="date" id="slDate">
       <div class="row">
         <div><label class="fld" for="slDeb">Début</label><input type="time" id="slDeb" value="09:00"></div>
         <div><label class="fld" for="slFin">Fin</label><input type="time" id="slFin" value="11:00"></div>
       </div>
-      <label class="fld" for="slLabel">Étiquette (facultatif)</label>
-      <input type="text" id="slLabel" placeholder="ex : matin, lumière douce…">
-      <button class="btn" id="addSlot" style="margin-top:14px">Ajouter ce créneau</button>
+      <label class="fld" for="slLabel">Étiquette (facultatif)</label><input type="text" id="slLabel" placeholder="ex : matin, lumière douce…">
+      <button class="btn" id="addSlot" style="margin-top:14px">Ajouter</button>
     </div>
     <div id="slotList"></div>
   </section>
@@ -200,24 +141,21 @@
   <!-- PLANNING -->
   <section id="tab-planning" class="hidden">
     <div class="card">
-      <button class="btn" id="organize">Organiser automatiquement</button>
-      <div class="switch">
-        <input type="checkbox" id="fromScratch" checked>
-        <label for="fromScratch" style="margin:0">Repartir de zéro (réaffecte tout sauf les contenus filmés)</label>
-      </div>
+      <button class="btn" id="organize">Organiser par setup</button>
+      <div class="switch"><input type="checkbox" id="fromScratch" checked><label for="fromScratch" style="margin:0">Repartir de zéro (garde les plans filmés)</label></div>
       <div class="progress" id="globalProgress"></div>
     </div>
-
     <div class="toolbar">
       <select id="filterSetup"><option value="">Tous les setups</option></select>
-      <button class="mini" id="addPlanBtn">+ Contenu</button>
     </div>
-    <div class="switch" style="margin:0 0 4px">
-      <input type="checkbox" id="hideFilme">
-      <label for="hideFilme" style="margin:0">Masquer les filmés</label>
-    </div>
-
+    <div class="switch" style="margin:0 0 4px"><input type="checkbox" id="hideDone"><label for="hideDone" style="margin:0">Masquer les plans filmés</label></div>
     <div id="planningView"></div>
+  </section>
+
+  <!-- REELS -->
+  <section id="tab-reels" class="hidden">
+    <div class="toolbar"><button class="mini" id="addContent">+ Réel / contenu</button></div>
+    <div id="reelsView"></div>
   </section>
 </div>
 
@@ -227,534 +165,333 @@
 <script>
 "use strict";
 
-/* ---------- État ---------- */
-var STORE_KEY = "tournages_v2";
-var state = { contents: [], slots: [], durReel:30, durCarr:20, durAutre:20 };
-var currentTab = "import";
-var filterSetup = "";
-var hideFilme = false;
-var editingId = null;
+var STORE_KEY="tournages_v3";
+var state={ contents:[], plans:[], slots:[], durPlan:10 };
+var filterSetup="", hideDone=false;
 
-var STATUTS = [
-  {v:"a_filmer", l:"À filmer"},
-  {v:"filme", l:"Filmé"},
-  {v:"reporte", l:"Reporté"},
-  {v:"annule", l:"Annulé"},
-  {v:"sans", l:"Sans tournage"}
-];
-function isActive(c){ return c.statut==="a_filmer" || c.statut==="filme"; } // occupe un créneau
+var C_STATUTS=[{v:"a_filmer",l:"À filmer"},{v:"reporte",l:"Reporté"},{v:"annule",l:"Annulé"},{v:"sans",l:"Sans tournage"}];
 
-function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 function load(){
-  try{
-    var raw = localStorage.getItem(STORE_KEY);
-    if(raw){
-      var d = JSON.parse(raw);
-      if(d && typeof d==="object"){
-        state.contents = Array.isArray(d.contents)?d.contents:[];
-        state.slots = Array.isArray(d.slots)?d.slots:[];
-        state.durReel = Number(d.durReel)>0?Number(d.durReel):30;
-        state.durCarr = Number(d.durCarr)>0?Number(d.durCarr):20;
-        state.durAutre = Number(d.durAutre)>0?Number(d.durAutre):20;
-      }
-    }
-  }catch(e){}
+  try{ var raw=localStorage.getItem(STORE_KEY); if(raw){ var d=JSON.parse(raw); if(d&&typeof d==="object"){
+    state.contents=Array.isArray(d.contents)?d.contents:[];
+    state.plans=Array.isArray(d.plans)?d.plans:[];
+    state.slots=Array.isArray(d.slots)?d.slots:[];
+    state.durPlan=Number(d.durPlan)>0?Number(d.durPlan):10;
+  }}}catch(e){}
 }
-function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
-  catch(e){ toast("Sauvegarde impossible sur cet appareil"); }
-}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){ toast("Sauvegarde impossible"); } }
 
-/* ---------- Utilitaires ---------- */
-function toast(msg){
-  var t=document.getElementById("toast");
-  t.textContent=msg; t.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t=setTimeout(function(){ t.classList.remove("show"); },2400);
-}
-function esc(s){
-  return String(s==null?"":s).replace(/[&<>"']/g,function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
-  });
-}
+function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(function(){t.classList.remove("show");},2400); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];}); }
 function stripAccents(s){ return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim(); }
-function toMinutes(hhmm){ if(!hhmm) return 0; var p=String(hhmm).split(":"); return (parseInt(p[0],10)||0)*60+(parseInt(p[1],10)||0); }
-function slotCapacity(sl){ var c=toMinutes(sl.fin)-toMinutes(sl.debut); return c>0?c:0; }
-function slotUsed(sl){
-  return state.contents.filter(function(c){ return c.slotId===sl.id && isActive(c); })
-                       .reduce(function(a,c){ return a+(Number(c.duree)||0); },0);
-}
-function frDate(iso){
-  if(!iso) return "";
-  var parts=String(iso).split("-"); if(parts.length!==3) return iso;
-  var d=new Date(parts[0],parts[1]-1,parts[2]);
-  var j=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
-  var m=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-  return j[d.getDay()]+" "+parseInt(parts[2],10)+" "+m[d.getMonth()];
-}
-function frDateShort(iso){
-  if(!iso) return "";
-  var parts=String(iso).split("-"); if(parts.length!==3) return iso;
-  var m=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-  return parseInt(parts[2],10)+" "+m[parts[1]-1];
-}
-function sortedSlots(){
-  return state.slots.slice().sort(function(a,b){
-    var ka=(a.date||"")+" "+(a.debut||""), kb=(b.date||"")+" "+(b.debut||"");
-    return ka<kb?-1:(ka>kb?1:0);
-  });
-}
-function setupsInUse(){
-  var set={}; state.contents.forEach(function(c){ if(c.setup) set[c.setup]=true; });
-  return Object.keys(set).sort();
-}
+function toMinutes(h){ if(!h) return 0; var p=String(h).split(":"); return (parseInt(p[0],10)||0)*60+(parseInt(p[1],10)||0); }
 function splitPipe(s){ return String(s||"").split("|").map(function(x){return x.trim();}).filter(Boolean); }
+function slotCapacity(sl){ var c=toMinutes(sl.fin)-toMinutes(sl.debut); return c>0?c:0; }
+function slotUsed(sl){ return state.plans.filter(function(p){ return p.slotId===sl.id && planActive(p); }).reduce(function(a,p){ return a+(Number(p.duree)||0); },0); }
+function frDate(iso){ if(!iso) return ""; var a=String(iso).split("-"); if(a.length!==3) return iso; var d=new Date(a[0],a[1]-1,a[2]); var j=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."],m=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."]; return j[d.getDay()]+" "+parseInt(a[2],10)+" "+m[d.getMonth()]; }
+function frDateShort(iso){ if(!iso) return ""; var a=String(iso).split("-"); if(a.length!==3) return iso; var m=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."]; return parseInt(a[2],10)+" "+m[a[1]-1]; }
+function sortedSlots(){ return state.slots.slice().sort(function(a,b){ var ka=(a.date||"")+" "+(a.debut||""),kb=(b.date||"")+" "+(b.debut||""); return ka<kb?-1:(ka>kb?1:0); }); }
+function contentById(id){ return state.contents.find(function(c){return c.id===id;}); }
+function contentActive(c){ return c && c.statut==="a_filmer"; }
+function planActive(p){ var c=contentById(p.contentId); return contentActive(c); }
+function medium(type){ var t=stripAccents(type); if(t.indexOf("carrousel")>-1||t.indexOf("carousel")>-1) return {icon:"📷",label:"Photo"}; if(t.indexOf("reel")>-1||t.indexOf("real")>-1) return {icon:"🎥",label:"Vidéo"}; return {icon:"🎬",label:type||""}; }
 
-/* ---------- Devinette de setup ---------- */
-function medium(type){
-  var t=stripAccents(type);
-  if(t.indexOf("carrousel")>-1||t.indexOf("carousel")>-1) return {icon:"📷", label:"Photo"};
-  if(t.indexOf("reel")>-1||t.indexOf("real")>-1) return {icon:"🎥", label:"Vidéo"};
-  return {icon:"🎬", label:type||"Autre"};
-}
-function guessSetup(titre, note){
-  var t=stripAccents(titre+" "+note);
-  if(/atelier|\bmains\b|laine|aiguille|crochet|tricot|matiere|couture|\bfil\b|tissu|etoffe|feutr|broderie|fibre|ouvrage|en cours/.test(t)) return "Atelier (mains)";
-  if(/flat ?lay|marque[- ]?page|objet fait main|\bproduit\b|presentation|packaging|\bcolis\b|emballage|boutique|\bprix\b|\bdispo\b|fond neutre|marque discrete/.test(t)) return "Flat lay produit";
+function guessSetup(txt){
+  var t=stripAccents(txt);
+  if(/atelier|\bmains\b|laine|aiguille|crochet|tricot|matiere|couture|coudre|\bfil\b|tissu|etoffe|feutr|broderie|fibre|ouvrage|coloriage|coloris|crayon|peinture|pigment|creati/.test(t)) return "Atelier / création";
+  if(/flat ?lay|marque[- ]?page|objet fait main|\bproduit\b|presentation|packaging|\bcolis\b|emballage|boutique|\bprix\b|\bdispo\b|fond neutre|mood/.test(t)) return "Flat lay produit";
   if(/exterieur|dehors|balade|\bmarche\b|nature|foret|jardin|\bparc\b|promenade/.test(t)) return "Extérieur";
-  if(/b[- ]?roll|lecture|plaid|\bthe\b|cosy|\blivre\b|bougie|dimanche|maison|matin|loisir|canape|salon|tasse|cocoon|cheminee|fenetre/.test(t)) return "Salon cosy (B-roll)";
-  if(/photo|overlay|\btexte\b|legend|citation|ecriture/.test(t)) return "Photo / texte";
-  return "À définir";
+  if(/b[- ]?roll|lecture|\blire\b|plaid|\bthe\b|chocolat|cosy|\blivre\b|bougie|dimanche|maison|matin|loisir|canape|salon|tasse|cocoon|cheminee|fenetre|casanier/.test(t)) return "Salon cosy";
+  if(/photo|overlay|\btexte\b|legend|citation|ecriture|slide/.test(t)) return "Photo / texte";
+  return "";
 }
-function mapStatutFromCSV(raw){
-  var s=stripAccents(raw);
-  if(!s) return null;
-  if(/film|fait|\bok\b|publi|done|termine/.test(s)) return "filme";
-  if(/report/.test(s)) return "reporte";
-  if(/annul/.test(s)) return "annule";
-  if(/sans/.test(s)) return "sans";
-  return "a_filmer";
+function setupForPlan(text, content){
+  var g=guessSetup(text);
+  if(g) return g;
+  var g2=content?guessSetup(content.titre+" "+content.note):"";
+  return g2||"À définir";
 }
+function setupsInUse(){ var s={}; state.plans.forEach(function(p){ if(p.setup) s[p.setup]=true; }); return Object.keys(s).sort(); }
 
 /* ---------- CSV ---------- */
 function parseCSV(text){
   if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
-  var firstLine=text.split(/\r?\n/)[0]||"";
-  var delim=(firstLine.split(";").length>=firstLine.split(",").length)?";":",";
-  var rows=[],row=[],cur="",inQ=false;
-  for(var i=0;i<text.length;i++){
-    var ch=text[i];
-    if(inQ){
-      if(ch==='"'){ if(text[i+1]==='"'){ cur+='"'; i++; } else inQ=false; }
-      else cur+=ch;
-    }else{
-      if(ch==='"') inQ=true;
-      else if(ch===delim){ row.push(cur); cur=""; }
-      else if(ch==="\n"){ row.push(cur); rows.push(row); row=[]; cur=""; }
-      else if(ch==="\r"){}
-      else cur+=ch;
-    }
+  var fl=text.split(/\r?\n/)[0]||""; var delim=(fl.split(";").length>=fl.split(",").length)?";":",";
+  var rows=[],row=[],cur="",q=false;
+  for(var i=0;i<text.length;i++){ var ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+    else{ if(ch==='"') q=true; else if(ch===delim){row.push(cur);cur="";} else if(ch==="\n"){row.push(cur);rows.push(row);row=[];cur="";} else if(ch==="\r"){} else cur+=ch; }
   }
   if(cur.length||row.length){ row.push(cur); rows.push(row); }
   return rows.filter(function(r){ return r.some(function(c){ return String(c).trim()!==""; }); });
 }
-function detectColumns(header){
-  var map={type:-1,titre:-1,pilier:-1,date:-1,statut:-1,note:-1,plan:-1,mat:-1,setup:-1};
-  header.forEach(function(h,idx){
-    var k=stripAccents(h);
-    if(map.type<0 && k==="type") map.type=idx;
-    if(map.titre<0 && (k==="titre"||k.indexOf("titre")>-1)) map.titre=idx;
-    if(map.pilier<0 && k.indexOf("pilier")>-1) map.pilier=idx;
-    if(map.setup<0 && (k.indexOf("setup")>-1||k.indexOf("decor")>-1||k.indexOf("lieu")>-1)) map.setup=idx;
-    if(map.date<0 && k.indexOf("date")>-1) map.date=idx;
-    if(map.statut<0 && k.indexOf("statut")>-1) map.statut=idx;
-    if(map.note<0 && (k.indexOf("note")>-1||k.indexOf("remarque")>-1)) map.note=idx;
-    if(map.plan<0 && k==="plan") map.plan=idx;
-    if(map.mat<0 && (k.indexOf("materiel")>-1||k.indexOf("materiaux")>-1)) map.mat=idx;
+function detectColumns(h){
+  var m={type:-1,titre:-1,pilier:-1,date:-1,statut:-1,note:-1,plan:-1,mat:-1};
+  h.forEach(function(x,i){ var k=stripAccents(x);
+    if(m.type<0&&k==="type") m.type=i;
+    if(m.titre<0&&k.indexOf("titre")>-1) m.titre=i;
+    if(m.pilier<0&&k.indexOf("pilier")>-1) m.pilier=i;
+    if(m.date<0&&k.indexOf("date")>-1) m.date=i;
+    if(m.statut<0&&k.indexOf("statut")>-1) m.statut=i;
+    if(m.note<0&&(k.indexOf("note")>-1||k.indexOf("remarque")>-1)) m.note=i;
+    if(m.plan<0&&k==="plan") m.plan=i;
+    if(m.mat<0&&(k.indexOf("materiel")>-1||k.indexOf("materiaux")>-1)) m.mat=i;
   });
-  return map;
+  return m;
 }
-function defaultDurFor(type){
-  var t=stripAccents(type);
-  if(t.indexOf("reel")>-1||t.indexOf("real")>-1) return state.durReel;
-  if(t.indexOf("carrousel")>-1||t.indexOf("carousel")>-1) return state.durCarr;
-  return state.durAutre;
-}
+function mapStatut(raw){ var s=stripAccents(raw); if(!s) return null; if(/report/.test(s)) return "reporte"; if(/annul/.test(s)) return "annule"; if(/sans/.test(s)) return "sans"; return "a_filmer"; }
 function importCSV(text, replace){
-  var rows=parseCSV(text);
-  if(!rows.length){ toast("Fichier vide"); return; }
-  var map=detectColumns(rows[0]);
-  var hasHeader=(map.titre>-1||map.type>-1);
-  var data, cols;
-  if(hasHeader){ data=rows.slice(1); cols=map; }
-  else { data=rows; cols={type:0,titre:1,pilier:2,date:6,statut:7,note:8,plan:9,mat:10,setup:-1}; }
-  var get=function(r,i){ return i>-1 && r[i]!=null ? String(r[i]).trim() : ""; };
-  var added=[];
+  var rows=parseCSV(text); if(!rows.length){ toast("Fichier vide"); return; }
+  var m=detectColumns(rows[0]); var hasH=(m.titre>-1||m.type>-1);
+  var data,cols;
+  if(hasH){ data=rows.slice(1); cols=m; } else { data=rows; cols={type:0,titre:1,pilier:2,date:6,statut:7,note:8,plan:9,mat:10}; }
+  var g=function(r,i){ return i>-1&&r[i]!=null?String(r[i]).trim():""; };
+  var newC=[], newP=[];
   data.forEach(function(r){
-    var titre=get(r,cols.titre);
-    var type=get(r,cols.type);
-    if(!titre && !type) return;
+    var titre=g(r,cols.titre), type=g(r,cols.type);
+    if(!titre&&!type) return;
     if(!titre) titre="(sans titre)";
-    var note=get(r,cols.note);
-    var setup = cols.setup>-1 ? get(r,cols.setup) : "";
-    if(!setup) setup=guessSetup(titre,note);
-    var statutCSV=mapStatutFromCSV(get(r,cols.statut));
-    var statut = statutCSV || "a_filmer";
-    added.push({
-      id:uid(), type:type||"", titre:titre, pilier:get(r,cols.pilier),
-      setup:setup, datePub:get(r,cols.date), duree:defaultDurFor(type),
-      plan:get(r,cols.plan), materiel:get(r,cols.mat), note:note,
-      statut:statut, slotId:null, planDone:[], matDone:[]
+    var c={ id:uid(), type:type||"", titre:titre, pilier:g(r,cols.pilier), datePub:g(r,cols.date),
+            materiel:g(r,cols.mat), note:g(r,cols.note), statut:mapStatut(g(r,cols.statut))||"a_filmer" };
+    newC.push(c);
+    var items=splitPipe(g(r,cols.plan));
+    if(!items.length) items=["(plan à préciser)"];
+    items.forEach(function(txt){
+      newP.push({ id:uid(), contentId:c.id, text:txt, setup:setupForPlan(txt,c), duree:state.durPlan, done:false, slotId:null });
     });
   });
-  if(!added.length){ toast("Aucun contenu détecté"); return; }
-  if(replace) state.contents=added;
-  else state.contents=state.contents.concat(added);
-  editingId=null;
+  if(!newC.length){ toast("Aucun contenu détecté"); return; }
+  if(replace){ state.contents=newC; state.plans=newP; }
+  else { state.contents=state.contents.concat(newC); state.plans=state.plans.concat(newP); }
   save();
-  var nVid=added.filter(function(c){return medium(c.type).label==="Vidéo";}).length;
-  var nPho=added.filter(function(c){return medium(c.type).label==="Photo";}).length;
-  document.getElementById("csvInfo").textContent=
-    added.length+" contenus chargés ("+nVid+" vidéos, "+nPho+" photos). Va dans « Planning ».";
-  toast(added.length+" contenus chargés");
+  document.getElementById("csvInfo").textContent=newC.length+" réels · "+newP.length+" plans à filmer. Va dans « Planning » puis « Organiser par setup ».";
+  toast(newP.length+" plans chargés");
   renderAll();
 }
 function exampleCSV(){
   var bom="\uFEFF";
-  var lines=[
-    "type;titre;pilier;visuel;legende;cta;date;statut;notes;plan;materiel",
-    "Reel;Gros plan atelier;Atelier;;;;2026-10-15;;Des mains, de la laine, un objet.;Plan 1 (large atelier)|Plan 2 (macro mains)|Plan 3 (produit fini);Laine|Aiguilles|Fond neutre",
-    "Reel;Commence un livre avec moi;Loin du Scroll;;;;2026-10-01;;B-roll lecture cosy, plaid, the.;Plan 1 (plaid + tasse)|Plan 2 (livre ouvert)|Plan 3 (page tournee);Plaid|Tasse|Livre|Bougie",
-    "Carrousel;10 activites a ne pas regretter;Loin du Scroll;;;;2026-10-11;;Liste FOMO, une activite par slide.;Slide cover (photo automne);Appareil photo",
-    "Reel;My two moods;Produit;;;;2026-11-03;;Flat lay deux versions.;Plan 1 (mood 1)|Plan 2 (mood 2);Objets fait main|2 fonds"
+  var L=[
+   "type;titre;pilier;visuel;legende;cta;date;statut;notes;plan;materiel",
+   "Reel;Les casanieres, notre saison;Voix;;;;2026-10-15;;Croyance revendiquee, voix off.;Plan 1 (macro coloriage + pigment)|Plan 2 (moyen humain + couture en cours)|Plan 3 (large humain + lecture sous plaid)|Plan 4 (macro couture + tissu en mouvement);Laine|Aiguilles|Papier|Crayons|Plaid|Tasse",
+   "Reel;Commence un livre avec moi;Loin du Scroll;;;;2026-10-01;;B-roll lecture cosy.;Plan 1 (plaid + tasse)|Plan 2 (livre ouvert)|Plan 3 (page tournee);Plaid|Tasse|Livre|Bougie",
+   "Reel;My two moods;Produit;;;;2026-11-03;;Flat lay deux versions.;Plan 1 (mood 1 objets)|Plan 2 (mood 2 objets);Objets fait main|2 fonds"
   ];
-  return bom+lines.join("\r\n");
+  return bom+L.join("\r\n");
 }
 
-/* ---------- Organisation ---------- */
+/* ---------- Organisation par setup ---------- */
 function organize(fromScratch){
   var avail=sortedSlots().filter(function(s){ return !s.indispo; });
   if(!avail.length){ toast("Ajoute des créneaux disponibles"); switchTab("creneaux"); return; }
-  if(fromScratch){
-    state.contents.forEach(function(c){ if(c.statut==="a_filmer") c.slotId=null; });
-  }
-  var toPlace=state.contents.filter(function(c){ return c.statut==="a_filmer" && !c.slotId; });
+  if(fromScratch){ state.plans.forEach(function(p){ if(planActive(p) && !p.done) p.slotId=null; }); }
+  var toPlace=state.plans.filter(function(p){ return planActive(p) && !p.done && !p.slotId; });
+  // échéance d'abord (pour respecter les dates), puis setup (pour regrouper)
   toPlace.sort(function(a,b){
-    var da=a.datePub||"9999-12-31", db=b.datePub||"9999-12-31";
+    var da=(contentById(a.contentId)||{}).datePub||"9999-12-31", db=(contentById(b.contentId)||{}).datePub||"9999-12-31";
     if(da!==db) return da<db?-1:1;
     var sa=stripAccents(a.setup), sb=stripAccents(b.setup);
-    if(sa!==sb) return sa<sb?-1:1;
-    return 0;
+    return sa<sb?-1:(sa>sb?1:0);
   });
   var leftover=0;
-  toPlace.forEach(function(c){
-    var dur=Number(c.duree)||0;
-    var eligible=avail.filter(function(sl){
-      if(c.datePub && sl.date>c.datePub) return false;
-      return (slotCapacity(sl)-slotUsed(sl))>=dur;
-    });
+  toPlace.forEach(function(p){
+    var dur=Number(p.duree)||0;
+    var dl=(contentById(p.contentId)||{}).datePub||"";
+    var eligible=avail.filter(function(sl){ if(dl && sl.date>dl) return false; return (slotCapacity(sl)-slotUsed(sl))>=dur; });
     if(!eligible.length){ leftover++; return; }
-    var same=eligible.filter(function(sl){
-      return state.contents.some(function(q){
-        var qs=stripAccents(q.setup), cs=stripAccents(c.setup);
-        return q.slotId===sl.id && qs===cs && cs!=="" && cs!=="a definir";
-      });
-    });
-    c.slotId=(same.length?same[0]:eligible[0]).id;
+    var same=eligible.filter(function(sl){ return state.plans.some(function(q){ return q.slotId===sl.id && stripAccents(q.setup)===stripAccents(p.setup) && p.setup && stripAccents(p.setup)!=="a definir"; }); });
+    p.slotId=(same.length?same[0]:eligible[0]).id;
   });
   save(); renderAll(); switchTab("planning");
-  toast(leftover>0 ? (leftover+" contenu(s) sans place avant leur date") : "Planning organisé");
+  toast(leftover>0?(leftover+" plan(s) sans place avant leur date"):"Plans regroupés par setup");
 }
 
-/* ---------- Rendu d'un contenu ---------- */
-function statutSelectHTML(c){
-  return '<select class="st" data-act="statut">'+STATUTS.map(function(s){
-    return '<option value="'+s.v+'"'+(c.statut===s.v?" selected":"")+'>'+s.l+'</option>';
-  }).join("")+'</select>';
+/* ---------- Rendu ---------- */
+function setupOptions(cur){
+  var list=setupsInUse(); if(cur && list.indexOf(cur)<0) list.push(cur);
+  if(list.indexOf("À définir")<0) list.push("À définir");
+  list.sort();
+  return list.map(function(s){ return '<option value="'+esc(s)+'"'+(s===cur?" selected":"")+'>'+esc(s)+'</option>'; }).join("");
 }
-function slotSelectHTML(currentId){
-  var opts=['<option value="">— Non planifié —</option>'];
-  sortedSlots().forEach(function(sl){
-    var lbl=frDateShort(sl.date)+" "+(sl.debut||"")+(sl.indispo?" (indispo)":"")+(sl.label?(" · "+sl.label):"");
-    opts.push('<option value="'+sl.id+'"'+(sl.id===currentId?" selected":"")+'>'+esc(lbl)+'</option>');
-  });
-  return opts.join("");
+function slotOptions(cur){
+  var o=['<option value="">— Non planifié —</option>'];
+  sortedSlots().forEach(function(sl){ o.push('<option value="'+sl.id+'"'+(sl.id===cur?" selected":"")+'>'+esc(frDateShort(sl.date)+" "+(sl.debut||"")+(sl.indispo?" (indispo)":""))+'</option>'); });
+  return o.join("");
 }
-function deadlineWarn(c){
-  if(!c.datePub || c.statut!=="a_filmer") return "";
-  if(c.slotId){
-    var sl=state.slots.find(function(s){return s.id===c.slotId;});
-    if(sl && sl.date>c.datePub) return '<span class="chip warn">⚠ filmé après la pub</span>';
-    return "";
-  }
+function deadlineWarnPlan(p){
+  var c=contentById(p.contentId); if(!c||!c.datePub||p.done) return "";
+  if(p.slotId){ var sl=state.slots.find(function(s){return s.id===p.slotId;}); if(sl&&sl.date>c.datePub) return '<span class="pchip warn">⚠ après la pub</span>'; return ""; }
   var ok=state.slots.some(function(s){ return !s.indispo && (!s.date||s.date<=c.datePub); });
-  if(!ok) return '<span class="chip warn">⚠ à caler avant le '+esc(frDateShort(c.datePub))+'</span>';
-  return "";
+  return ok?"":'<span class="pchip warn">⚠ avant le '+esc(frDateShort(c.datePub))+'</span>';
 }
-function editHTML(c){
-  return '<div class="editbox">'
-    + '<label class="fld">Titre</label><input data-f="titre" value="'+esc(c.titre)+'">'
-    + '<div class="row">'
-      + '<div><label class="fld">Type</label><input data-f="type" value="'+esc(c.type)+'"></div>'
-      + '<div><label class="fld">Durée (min)</label><input type="number" min="1" data-f="duree" value="'+(Number(c.duree)||0)+'"></div>'
-    + '</div>'
-    + '<label class="fld">Setup de tournage</label><input list="setupList" data-f="setup" value="'+esc(c.setup)+'" placeholder="atelier, flat lay produit, salon cosy…">'
-    + '<div class="row">'
-      + '<div><label class="fld">Date de publication</label><input type="date" data-f="datePub" value="'+esc(c.datePub)+'"></div>'
-      + '<div><label class="fld">Statut</label><select data-f="statut">'+STATUTS.map(function(s){return '<option value="'+s.v+'"'+(c.statut===s.v?" selected":"")+'>'+s.l+'</option>';}).join("")+'</select></div>'
-    + '</div>'
-    + '<label class="fld">Plan — un plan par « | »</label><textarea data-f="plan" rows="3" placeholder="Plan 1 (...)|Plan 2 (...)|Plan 3 (...)">'+esc(c.plan)+'</textarea>'
-    + '<label class="fld">Matériel — séparé par « | »</label><input data-f="materiel" value="'+esc(c.materiel)+'" placeholder="Laine|Aiguilles|Fond neutre">'
-    + '<label class="fld">Notes</label><textarea data-f="note" rows="3">'+esc(c.note)+'</textarea>'
-    + '<div class="row" style="margin-top:12px">'
-      + '<button class="btn" data-act="savecontent">Enregistrer</button>'
-      + '<button class="btn line" data-act="canceledit">Annuler</button>'
-    + '</div>'
-  + '</div>';
-}
-function fieldHTML(label, value){
-  if(value && String(value).trim()) return '<div class="field"><div class="flabel">'+label+'</div><div class="ftext">'+esc(value)+'</div></div>';
-  return '<div class="field empty-field" data-act="edit"><span class="flabel">'+label+'</span><span class="add">＋ à définir</span></div>';
-}
-function checklistHTML(label, value, done, kind){
-  var items=splitPipe(value);
-  if(!items.length) return '<div class="field empty-field" data-act="edit"><span class="flabel">'+label+'</span><span class="add">＋ à définir</span></div>';
-  done=done||[];
-  var doneN=items.filter(function(_,i){return done.indexOf(i)>-1;}).length;
-  var rows=items.map(function(it,i){
-    var on=done.indexOf(i)>-1;
-    return '<div class="cli'+(on?" on":"")+'" data-act="'+kind+'" data-idx="'+i+'"><span class="clbox">✓</span><span class="cltext">'+esc(it)+'</span></div>';
-  }).join("");
-  return '<div class="field"><div class="flabel">'+label+' ('+doneN+'/'+items.length+')</div><div class="checklist">'+rows+'</div></div>';
-}
-function contentHTML(c){
-  if(editingId===c.id){
-    return '<div class="item" data-id="'+c.id+'"><div class="item-title">'+esc(c.titre)+'</div>'+editHTML(c)+'</div>';
-  }
-  var cls="item "+(c.statut==="filme"?"filme":(c.statut==="reporte"?"reporte":(c.statut==="annule"?"annule":(c.statut==="sans"?"sans":""))));
-  var chips="";
+function planHTML(p){
+  var c=contentById(p.contentId)||{};
   var med=medium(c.type);
-  chips+='<span class="chip type">'+med.icon+' '+esc(c.type||med.label)+'</span>';
-  if(c.setup) chips+='<span class="chip setup">📍 '+esc(c.setup)+'</span>';
-  if(c.datePub) chips+='<span class="chip date">📅 '+esc(frDateShort(c.datePub))+'</span>';
-  chips+=deadlineWarn(c);
-  return '<div class="'+cls+'" data-id="'+c.id+'">'
-    + '<div class="item-title">'+esc(c.titre)+'</div>'
-    + '<div class="meta">'+chips+'</div>'
-    + '<div class="fields">'+fieldHTML("Notes",c.note)+checklistHTML("Plan",c.plan,c.planDone,"plancheck")+checklistHTML("Matériel",c.materiel,c.matDone,"matcheck")+'</div>'
-    + '<div class="actions">'
-      + statutSelectHTML(c)
-      + '<select data-act="move">'+slotSelectHTML(c.slotId)+'</select>'
-      + '<button class="mini" data-act="edit">✎</button>'
-      + '<button class="mini" data-act="del">✕</button>'
+  var label=med.icon+' '+esc(c.titre||"")+(c.datePub?(' · 📅 '+esc(frDateShort(c.datePub))):"");
+  return '<div class="plan'+(p.done?" done":"")+'" data-pid="'+p.id+'">'
+    + '<div class="box'+(p.done?" on":"")+'" data-act="done">✓</div>'
+    + '<div class="pbody">'
+      + '<div class="ptext">'+esc(p.text)+'</div>'
+      + '<div class="plabel">'+label+' '+deadlineWarnPlan(p)+'</div>'
+      + '<div class="pctrl">'
+        + '<select data-act="setup">'+setupOptions(p.setup)+'</select>'
+        + '<select data-act="move">'+slotOptions(p.slotId)+'</select>'
+        + '<input class="dur" type="number" min="1" data-act="dur" value="'+(Number(p.duree)||0)+'">'
+        + '<button class="mini" data-act="del">✕</button>'
+      + '</div>'
     + '</div>'
   + '</div>';
 }
-
-/* ---------- Rendu écrans ---------- */
-function renderImport(){
-  document.getElementById("durReel").value=state.durReel;
-  document.getElementById("durCarr").value=state.durCarr;
-  document.getElementById("durAutre").value=state.durAutre;
+function groupBySetup(plans){
+  var map={}; plans.forEach(function(p){ var k=p.setup||"À définir"; (map[k]=map[k]||[]).push(p); });
+  return map;
 }
+function passFilter(p){ if(filterSetup && p.setup!==filterSetup) return false; if(hideDone && p.done) return false; return true; }
+
+function renderImport(){ document.getElementById("durPlan").value=state.durPlan; }
 function renderSlots(){
-  var host=document.getElementById("slotList");
-  var slots=sortedSlots();
+  var host=document.getElementById("slotList"); var slots=sortedSlots();
   if(!slots.length){ host.innerHTML='<div class="empty">Aucun créneau.<br>Ajoute les jours et heures où tu peux filmer.</div>'; return; }
   host.innerHTML=slots.map(function(sl){
-    var cap=slotCapacity(sl), used=slotUsed(sl);
-    var n=state.contents.filter(function(c){return c.slotId===sl.id && isActive(c);}).length;
+    var cap=slotCapacity(sl),used=slotUsed(sl);
+    var n=state.plans.filter(function(p){return p.slotId===sl.id && planActive(p);}).length;
     return '<div class="card'+(sl.indispo?" dim":"")+'" data-slot="'+sl.id+'">'
-      + '<div class="slot-head"><span class="slot-title">'+esc(frDate(sl.date))+(sl.indispo?" · indisponible":"")+'</span>'
-      + '<span class="cap'+(used>cap?" over":"")+'">'+used+' / '+cap+' min</span></div>'
-      + '<div class="sub">'+esc(sl.debut||"")+' – '+esc(sl.fin||"")+(sl.label?(" · "+esc(sl.label)):"")+' · '+n+' contenu'+(n>1?"s":"")+'</div>'
-      + '<div class="actions">'
-        + '<button class="mini" data-act="toggleindispo">'+(sl.indispo?"Rendre disponible":"Marquer indisponible")+'</button>'
-        + '<button class="mini" data-act="delslot">Supprimer</button>'
-      + '</div>'
-    + '</div>';
+      +'<div class="slot-head"><span class="slot-title">'+esc(frDate(sl.date))+(sl.indispo?" · indisponible":"")+'</span><span class="cap'+(used>cap?" over":"")+'">'+used+' / '+cap+' min</span></div>'
+      +'<div class="sub">'+esc(sl.debut||"")+' – '+esc(sl.fin||"")+(sl.label?(" · "+esc(sl.label)):"")+' · '+n+' plan'+(n>1?"s":"")+'</div>'
+      +'<div class="pctrl"><button class="mini" data-act="toggleindispo">'+(sl.indispo?"Rendre disponible":"Marquer indisponible")+'</button><button class="mini" data-act="delslot">Supprimer</button></div>'
+    +'</div>';
   }).join("");
-}
-function passFilter(c){
-  if(filterSetup && c.setup!==filterSetup) return false;
-  if(hideFilme && c.statut==="filme") return false;
-  return true;
 }
 function renderPlanning(){
-  var host=document.getElementById("planningView");
   document.getElementById("setupList").innerHTML=setupsInUse().map(function(s){return '<option value="'+esc(s)+'">';}).join("");
   var sel=document.getElementById("filterSetup");
-  sel.innerHTML='<option value="">Tous les setups</option>'+setupsInUse().map(function(s){
-    return '<option value="'+esc(s)+'"'+(s===filterSetup?" selected":"")+'>'+esc(s)+'</option>';
-  }).join("");
-  var shoot=state.contents.filter(function(c){return isActive(c);});
-  var done=shoot.filter(function(c){return c.statut==="filme";}).length;
-  document.getElementById("globalProgress").textContent=
-    state.contents.length ? (done+" / "+shoot.length+" filmés") : "Aucun contenu chargé.";
-  if(!state.contents.length){
-    host.innerHTML='<div class="empty">Charge ton CSV dans « Import », ajoute des créneaux, puis touche « Organiser ».</div>'; return;
-  }
+  sel.innerHTML='<option value="">Tous les setups</option>'+setupsInUse().map(function(s){return '<option value="'+esc(s)+'"'+(s===filterSetup?" selected":"")+'>'+esc(s)+'</option>';}).join("");
+  var active=state.plans.filter(planActive);
+  var done=active.filter(function(p){return p.done;}).length;
+  document.getElementById("globalProgress").textContent=state.plans.length?(done+" / "+active.length+" plans filmés"):"Aucun plan chargé.";
+  var host=document.getElementById("planningView");
+  if(!state.plans.length){ host.innerHTML='<div class="empty">Charge ton CSV, ajoute des créneaux, puis « Organiser par setup ».</div>'; return; }
   var html="";
   sortedSlots().forEach(function(sl){
-    var list=state.contents.filter(function(c){ return c.slotId===sl.id && isActive(c) && passFilter(c); });
-    list.sort(function(a,b){
-      var sa=stripAccents(a.setup),sb=stripAccents(b.setup);
-      if(sa!==sb) return sa<sb?-1:1;
-      var da=a.datePub||"9999",db=b.datePub||"9999";
-      return da<db?-1:(da>db?1:0);
-    });
-    var cap=slotCapacity(sl), used=slotUsed(sl);
-    var pct=cap?Math.min(100,Math.round(used/cap*100)):0;
-    var setups={},mats={},nVid=0,nPho=0;
-    state.contents.forEach(function(c){ if(c.slotId===sl.id && isActive(c)){ if(c.setup) setups[c.setup]=true; splitPipe(c.materiel).forEach(function(m){ mats[m]=true; }); var mm=medium(c.type).label; if(mm==="Vidéo")nVid++; else if(mm==="Photo")nPho++; } });
-    var medLine=(nVid?("🎥 "+nVid+" vidéo"+(nVid>1?"s":"")):"")+((nVid&&nPho)?" · ":"")+(nPho?("📷 "+nPho+" photo"+(nPho>1?"s":"")):"");
+    var list=state.plans.filter(function(p){ return p.slotId===sl.id && planActive(p) && passFilter(p); });
+    var cap=slotCapacity(sl),used=slotUsed(sl),pct=cap?Math.min(100,Math.round(used/cap*100)):0;
+    var mats={}; state.plans.forEach(function(p){ if(p.slotId===sl.id&&planActive(p)){ var c=contentById(p.contentId); if(c) splitPipe(c.materiel).forEach(function(mm){mats[mm]=true;}); } });
+    var grp=groupBySetup(list); var keys=Object.keys(grp).sort();
     html+='<div class="card'+(sl.indispo?" dim":"")+'">'
-      + '<div class="slot-head"><span class="slot-title">'+esc(frDate(sl.date))+' · '+esc(sl.debut||"")+(sl.indispo?" (indispo)":"")+'</span>'
-      + '<span class="cap'+(used>cap?" over":"")+'">'+used+' / '+cap+' min</span></div>'
-      + (Object.keys(setups).length?'<div class="sub">📍 '+esc(Object.keys(setups).join(" · "))+'</div>':'')
-      + (medLine?'<div class="sub">'+medLine+'</div>':'')
-      + (Object.keys(mats).length?'<div class="sub">🎒 À prévoir : '+esc(Object.keys(mats).join(", "))+'</div>':'')
-      + '<div class="bar"><span class="'+(used>cap?"over":"")+'" style="width:'+pct+'%"></span></div>'
-      + (list.length?list.map(contentHTML).join(""):'<div class="empty small">Créneau vide</div>')
-    + '</div>';
+      +'<div class="slot-head"><span class="slot-title">'+esc(frDate(sl.date))+' · '+esc(sl.debut||"")+(sl.indispo?" (indispo)":"")+'</span><span class="cap'+(used>cap?" over":"")+'">'+used+' / '+cap+' min</span></div>'
+      +(Object.keys(mats).length?'<div class="sub">🎒 À prévoir : '+esc(Object.keys(mats).join(", "))+'</div>':'')
+      +'<div class="bar"><span class="'+(used>cap?"over":"")+'" style="width:'+pct+'%"></span></div>'
+      +(keys.length?keys.map(function(k){ return '<div class="grp"><span class="grp-h">📍 '+esc(k)+' · '+grp[k].length+'</span>'+grp[k].map(planHTML).join("")+'</div>'; }).join(""):'<div class="empty small">Créneau vide</div>')
+    +'</div>';
   });
-  var np=state.contents.filter(function(c){ return !c.slotId && c.statut==="a_filmer" && passFilter(c); });
-  np.sort(function(a,b){ var da=a.datePub||"9999",db=b.datePub||"9999"; return da<db?-1:(da>db?1:0); });
+  var np=state.plans.filter(function(p){ return !p.slotId && planActive(p) && passFilter(p); });
+  var g=groupBySetup(np); var gk=Object.keys(g).sort();
   html+='<div class="card"><div class="slot-head"><span class="slot-title">À planifier</span><span class="cap">'+np.length+'</span></div>'
-    + (np.length?np.map(contentHTML).join(""):'<div class="empty small">Tout est calé 🎉</div>')+'</div>';
-  var other=state.contents.filter(function(c){ return (c.statut==="reporte"||c.statut==="sans"||c.statut==="annule") && passFilter(c); });
-  if(other.length){
-    other.sort(function(a,b){ return a.statut<b.statut?-1:1; });
-    html+='<div class="card"><div class="slot-head"><span class="slot-title">Reportés / sans tournage</span><span class="cap">'+other.length+'</span></div>'
-      + other.map(contentHTML).join("")+'</div>';
-  }
+    +(np.length?gk.map(function(k){ return '<div class="grp"><span class="grp-h">📍 '+esc(k)+' · '+g[k].length+'</span>'+g[k].map(planHTML).join("")+'</div>'; }).join(""):'<div class="empty small">Tout est calé 🎉</div>')+'</div>';
   host.innerHTML=html;
 }
-function renderAll(){ renderImport(); renderSlots(); renderPlanning(); }
+function renderReels(){
+  var host=document.getElementById("reelsView");
+  if(!state.contents.length){ host.innerHTML='<div class="empty">Aucun réel. Charge un CSV ou ajoute-en un.</div>'; return; }
+  host.innerHTML=state.contents.map(function(c){
+    var plans=state.plans.filter(function(p){return p.contentId===c.id;});
+    var planRows=plans.map(function(p){
+      return '<div class="planline" data-pid="'+p.id+'">'
+        +'<input class="pt" data-cf="text" value="'+esc(p.text)+'" placeholder="texte du plan">'
+        +'<input class="ps" list="setupList" data-cf="setup" value="'+esc(p.setup)+'" placeholder="setup">'
+        +'<button class="mini" data-act="delplan">✕</button>'
+      +'</div>';
+    }).join("");
+    return '<div class="card'+(contentActive(c)?"":" dim")+'" data-cid="'+c.id+'">'
+      +'<input class="rtitle" data-f="titre" value="'+esc(c.titre)+'" style="border:0;background:transparent;padding:0;margin-bottom:8px">'
+      +'<div class="row"><input data-f="type" value="'+esc(c.type)+'" placeholder="type"><input type="date" data-f="datePub" value="'+esc(c.datePub)+'"></div>'
+      +'<label class="fld">Statut</label><select data-f="statut">'+C_STATUTS.map(function(s){return '<option value="'+s.v+'"'+(c.statut===s.v?" selected":"")+'>'+s.l+'</option>';}).join("")+'</select>'
+      +'<label class="fld">Matériel (séparé par « | »)</label><input data-f="materiel" value="'+esc(c.materiel)+'" placeholder="Laine|Aiguilles">'
+      +'<label class="fld">Notes</label><textarea data-f="note" rows="2">'+esc(c.note)+'</textarea>'
+      +'<label class="fld">Plans (un par ligne, avec son setup)</label>'+planRows
+      +'<button class="mini" data-act="addplan" style="margin-top:8px">+ plan</button>'
+      +' <button class="mini" data-act="delcontent" style="margin-top:8px">Supprimer le réel</button>'
+    +'</div>';
+  }).join("");
+}
+function renderAll(){ renderImport(); renderSlots(); renderPlanning(); renderReels(); }
 
-/* ---------- Navigation ---------- */
 function switchTab(name){
-  currentTab=name;
-  ["import","creneaux","planning"].forEach(function(t){ document.getElementById("tab-"+t).classList.toggle("hidden",t!==name); });
+  ["import","creneaux","planning","reels"].forEach(function(t){ document.getElementById("tab-"+t).classList.toggle("hidden",t!==name); });
   Array.prototype.forEach.call(document.querySelectorAll(".tabs button"),function(b){ b.classList.toggle("on",b.getAttribute("data-tab")===name); });
 }
 
 /* ---------- Événements ---------- */
-function findContent(id){ return state.contents.find(function(c){return c.id===id;}); }
-function saveEdit(id, box){
-  var c=findContent(id); if(!c) return;
-  var oldPlan=c.plan, oldMat=c.materiel;
-  box.querySelectorAll("[data-f]").forEach(function(el){
-    var f=el.getAttribute("data-f");
-    if(f==="duree"){ var v=parseInt(el.value,10); c.duree=v>0?v:defaultDurFor(c.type); }
-    else c[f]=el.value.trim();
-  });
-  if(c.plan!==oldPlan) c.planDone=[];
-  if(c.materiel!==oldMat) c.matDone=[];
-  if(c.statut!=="a_filmer" && c.statut!=="filme") c.slotId=null;
-  editingId=null; save(); renderAll(); toast("Modifié");
-}
+function planById(id){ return state.plans.find(function(p){return p.id===id;}); }
 
 function bind(){
-  Array.prototype.forEach.call(document.querySelectorAll(".tabs button"),function(b){
-    b.addEventListener("click",function(){ switchTab(b.getAttribute("data-tab")); });
-  });
+  Array.prototype.forEach.call(document.querySelectorAll(".tabs button"),function(b){ b.addEventListener("click",function(){ switchTab(b.getAttribute("data-tab")); }); });
 
-  document.getElementById("csvFile").addEventListener("change",function(e){
-    var f=e.target.files[0]; if(!f) return;
-    var r=new FileReader();
-    r.onload=function(){ importCSV(r.result, document.getElementById("replaceCsv").checked); e.target.value=""; };
-    r.readAsText(f,"UTF-8");
-  });
-  document.getElementById("dlExample").addEventListener("click",function(){
-    var blob=new Blob([exampleCSV()],{type:"text/csv;charset=utf-8"});
-    var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="exemple_tournage.csv";
-    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
-  });
-  ["durReel","durCarr","durAutre"].forEach(function(id){
-    document.getElementById(id).addEventListener("change",function(e){
-      var v=parseInt(e.target.value,10); v=v>0?v:1; e.target.value=v;
-      if(id==="durReel") state.durReel=v; else if(id==="durCarr") state.durCarr=v; else state.durAutre=v;
-      save();
-    });
-  });
-  document.getElementById("wipe").addEventListener("click",function(){
-    if(confirm("Tout effacer (contenus et créneaux) ? Action définitive.")){
-      state.contents=[]; state.slots=[]; editingId=null; save(); renderAll(); toast("Tout est effacé");
-    }
-  });
+  document.getElementById("csvFile").addEventListener("change",function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ importCSV(r.result, document.getElementById("replaceCsv").checked); e.target.value=""; }; r.readAsText(f,"UTF-8"); });
+  document.getElementById("dlExample").addEventListener("click",function(){ var b=new Blob([exampleCSV()],{type:"text/csv;charset=utf-8"}); var a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="exemple_tournage.csv"; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500); });
+  document.getElementById("durPlan").addEventListener("change",function(e){ var v=parseInt(e.target.value,10); state.durPlan=v>0?v:10; e.target.value=state.durPlan; save(); });
+  document.getElementById("wipe").addEventListener("click",function(){ if(confirm("Tout effacer ?")){ state.contents=[]; state.plans=[]; state.slots=[]; save(); renderAll(); toast("Effacé"); } });
 
   document.getElementById("addSlot").addEventListener("click",function(){
-    var date=document.getElementById("slDate").value;
-    var deb=document.getElementById("slDeb").value;
-    var fin=document.getElementById("slFin").value;
-    var lbl=document.getElementById("slLabel").value.trim();
+    var date=document.getElementById("slDate").value,deb=document.getElementById("slDeb").value,fin=document.getElementById("slFin").value,lbl=document.getElementById("slLabel").value.trim();
     if(!date){ toast("Choisis un jour"); return; }
     if(toMinutes(fin)<=toMinutes(deb)){ toast("La fin doit être après le début"); return; }
     state.slots.push({id:uid(),date:date,debut:deb,fin:fin,label:lbl,indispo:false});
-    document.getElementById("slLabel").value="";
-    save(); renderAll(); toast("Créneau ajouté");
+    document.getElementById("slLabel").value=""; save(); renderAll(); toast("Créneau ajouté");
   });
   document.getElementById("slotList").addEventListener("click",function(e){
     var btn=e.target.closest("[data-act]"); if(!btn) return;
-    var card=e.target.closest("[data-slot]"); var id=card.getAttribute("data-slot");
-    var sl=state.slots.find(function(s){return s.id===id;}); if(!sl) return;
+    var card=e.target.closest("[data-slot]"); var id=card.getAttribute("data-slot"); var sl=state.slots.find(function(s){return s.id===id;}); if(!sl) return;
     var act=btn.getAttribute("data-act");
-    if(act==="delslot"){
-      if(confirm("Supprimer ce créneau ? Les contenus repasseront à planifier.")){
-        state.contents.forEach(function(c){ if(c.slotId===id) c.slotId=null; });
-        state.slots=state.slots.filter(function(s){return s.id!==id;});
-        save(); renderAll();
-      }
-    }else if(act==="toggleindispo"){
-      sl.indispo=!sl.indispo;
-      if(sl.indispo){ state.contents.forEach(function(c){ if(c.slotId===id && c.statut==="a_filmer") c.slotId=null; }); }
-      save(); renderAll();
-      toast(sl.indispo?"Indisponible, contenus à replanifier":"Créneau redisponible");
-    }
+    if(act==="delslot"){ if(confirm("Supprimer ce créneau ?")){ state.plans.forEach(function(p){ if(p.slotId===id) p.slotId=null; }); state.slots=state.slots.filter(function(s){return s.id!==id;}); save(); renderAll(); } }
+    else if(act==="toggleindispo"){ sl.indispo=!sl.indispo; if(sl.indispo){ state.plans.forEach(function(p){ if(p.slotId===id && !p.done) p.slotId=null; }); } save(); renderAll(); toast(sl.indispo?"Indisponible, plans à replanifier":"Redisponible"); }
   });
 
   document.getElementById("organize").addEventListener("click",function(){ organize(document.getElementById("fromScratch").checked); });
   document.getElementById("filterSetup").addEventListener("change",function(e){ filterSetup=e.target.value; renderPlanning(); });
-  document.getElementById("hideFilme").addEventListener("change",function(e){ hideFilme=e.target.checked; renderPlanning(); });
-  document.getElementById("addPlanBtn").addEventListener("click",function(){
-    var titre=prompt("Titre du contenu :"); if(!titre) return;
-    var c={id:uid(),type:"Reel",titre:titre.trim(),pilier:"",setup:filterSetup||"À définir",datePub:"",duree:state.durReel,plan:"",materiel:"",note:"",statut:"a_filmer",slotId:null,planDone:[],matDone:[]};
-    state.contents.push(c); editingId=c.id; save(); renderPlanning(); switchTab("planning");
-  });
+  document.getElementById("hideDone").addEventListener("change",function(e){ hideDone=e.target.checked; renderPlanning(); });
 
   var pv=document.getElementById("planningView");
   pv.addEventListener("click",function(e){
-    var el=e.target.closest("[data-act]"); if(!el) return;
-    var itemEl=e.target.closest(".item"); if(!itemEl) return;
-    var id=itemEl.getAttribute("data-id"); var c=findContent(id); if(!c) return;
-    var act=el.getAttribute("data-act");
-    if(act==="edit"){ editingId=id; renderPlanning(); }
-    else if(act==="canceledit"){ editingId=null; renderPlanning(); }
-    else if(act==="savecontent"){ saveEdit(id, itemEl); }
-    else if(act==="plancheck"){ if(!c.planDone) c.planDone=[]; var pi=parseInt(el.getAttribute("data-idx"),10); var pk=c.planDone.indexOf(pi); if(pk>-1) c.planDone.splice(pk,1); else c.planDone.push(pi); save(); renderPlanning(); }
-    else if(act==="matcheck"){ if(!c.matDone) c.matDone=[]; var mi=parseInt(el.getAttribute("data-idx"),10); var mk=c.matDone.indexOf(mi); if(mk>-1) c.matDone.splice(mk,1); else c.matDone.push(mi); save(); renderPlanning(); }
-    else if(act==="del"){ if(confirm("Supprimer « "+c.titre+" » ?")){ state.contents=state.contents.filter(function(x){return x.id!==id;}); save(); renderPlanning(); } }
+    var el=e.target.closest("[data-act]"); if(!el) return; var pe=e.target.closest("[data-pid]"); if(!pe) return;
+    var p=planById(pe.getAttribute("data-pid")); if(!p) return; var act=el.getAttribute("data-act");
+    if(act==="done"){ p.done=!p.done; save(); renderPlanning(); }
+    else if(act==="del"){ if(confirm("Supprimer ce plan ?")){ state.plans=state.plans.filter(function(x){return x.id!==p.id;}); save(); renderPlanning(); } }
   });
   pv.addEventListener("change",function(e){
-    var el=e.target.closest("[data-act]"); if(!el) return;
-    var itemEl=e.target.closest(".item"); if(!itemEl) return;
-    var id=itemEl.getAttribute("data-id"); var c=findContent(id); if(!c) return;
-    var act=el.getAttribute("data-act");
-    if(act==="move"){ c.slotId=el.value||null; save(); renderPlanning(); }
-    else if(act==="statut"){
-      c.statut=el.value;
-      if(c.statut==="reporte"||c.statut==="annule"||c.statut==="sans") c.slotId=null;
-      save(); renderPlanning();
-    }
+    var el=e.target.closest("[data-act]"); if(!el) return; var pe=e.target.closest("[data-pid]"); if(!pe) return;
+    var p=planById(pe.getAttribute("data-pid")); if(!p) return; var act=el.getAttribute("data-act");
+    if(act==="move"){ p.slotId=el.value||null; save(); renderPlanning(); }
+    else if(act==="setup"){ p.setup=el.value; save(); renderPlanning(); }
+    else if(act==="dur"){ var v=parseInt(el.value,10); p.duree=v>0?v:state.durPlan; save(); renderPlanning(); }
   });
 
-  var today=new Date();
-  document.getElementById("slDate").value=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
+  document.getElementById("addContent").addEventListener("click",function(){
+    var t=prompt("Titre du réel / contenu :"); if(!t) return;
+    var c={id:uid(),type:"Reel",titre:t.trim(),pilier:"",datePub:"",materiel:"",note:"",statut:"a_filmer"};
+    state.contents.push(c);
+    state.plans.push({id:uid(),contentId:c.id,text:"Plan 1",setup:"À définir",duree:state.durPlan,done:false,slotId:null});
+    save(); renderReels(); switchTab("reels");
+  });
+  var rv=document.getElementById("reelsView");
+  rv.addEventListener("change",function(e){
+    var el=e.target.closest("[data-f],[data-cf]"); if(!el) return;
+    var cardEl=e.target.closest("[data-cid]"); var c=contentById(cardEl.getAttribute("data-cid")); if(!c) return;
+    if(el.hasAttribute("data-f")){ c[el.getAttribute("data-f")]=el.value.trim(); save(); if(el.getAttribute("data-f")==="statut") renderPlanning(); }
+    else { var pe=e.target.closest("[data-pid]"); var p=planById(pe.getAttribute("data-pid")); if(p){ p[el.getAttribute("data-cf")]=el.value.trim(); save(); } }
+  });
+  rv.addEventListener("click",function(e){
+    var el=e.target.closest("[data-act]"); if(!el) return; var act=el.getAttribute("data-act");
+    var cardEl=e.target.closest("[data-cid]"); var c=cardEl?contentById(cardEl.getAttribute("data-cid")):null;
+    if(act==="addplan"&&c){ state.plans.push({id:uid(),contentId:c.id,text:"Nouveau plan",setup:"À définir",duree:state.durPlan,done:false,slotId:null}); save(); renderReels(); }
+    else if(act==="delplan"){ var pe=e.target.closest("[data-pid]"); if(pe&&confirm("Supprimer ce plan ?")){ state.plans=state.plans.filter(function(x){return x.id!==pe.getAttribute("data-pid");}); save(); renderReels(); } }
+    else if(act==="delcontent"&&c){ if(confirm("Supprimer « "+c.titre+" » et ses plans ?")){ state.plans=state.plans.filter(function(p){return p.contentId!==c.id;}); state.contents=state.contents.filter(function(x){return x.id!==c.id;}); save(); renderAll(); } }
+  });
+
+  var t=new Date();
+  document.getElementById("slDate").value=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
 }
 
-/* ---------- Démarrage ---------- */
 load(); bind(); renderAll(); switchTab("import");
 </script>
 </body>
