@@ -65,7 +65,8 @@
   .box.on{background:var(--ok); border-color:var(--ok); color:#fff}
   .pbody{flex:1; min-width:0}
   .ptext{font-weight:500; word-wrap:break-word}
-  .plan.done .ptext{text-decoration:line-through; color:var(--muted)}
+  .rname{color:var(--muted); font-weight:400}
+  .plan.done .ptxt{text-decoration:line-through; color:var(--muted)}
   .plabel{font-size:12px; color:var(--muted); margin-top:2px}
   .pchip{font-size:11px; font-weight:600; padding:2px 7px; border-radius:20px; background:var(--chip); color:var(--muted); white-space:nowrap}
   .pchip.warn{background:var(--warn-soft); color:var(--warn)}
@@ -91,7 +92,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1><span class="emo">🎬</span>Mes tournages</h1>
+    <h1><span class="emo">🎬</span>Mes tournages <span id="syncStatus" style="font-weight:500;font-size:12px;color:var(--muted)"></span></h1>
     <div class="tabs">
       <button data-tab="import" class="on">Import</button>
       <button data-tab="creneaux">Créneaux</button>
@@ -142,6 +143,7 @@
   <section id="tab-planning" class="hidden">
     <div class="card">
       <button class="btn" id="organize">Organiser par setup</button>
+      <button class="btn line" id="clearPlan" style="margin-top:8px">Vider le planning</button>
       <div class="switch"><input type="checkbox" id="fromScratch" checked><label for="fromScratch" style="margin:0">Repartir de zéro (garde les plans filmés)</label></div>
       <div class="progress" id="globalProgress"></div>
     </div>
@@ -178,9 +180,34 @@ function load(){
     state.plans=Array.isArray(d.plans)?d.plans:[];
     state.slots=Array.isArray(d.slots)?d.slots:[];
     state.durPlan=Number(d.durPlan)>0?Number(d.durPlan):10;
+    state.contents.forEach(function(c){ c.datePub=normalizeDate(c.datePub); });
   }}}catch(e){}
 }
-function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){ toast("Sauvegarde impossible"); } }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} pushState(); }
+function setSync(m){ var el=document.getElementById("syncStatus"); if(el) el.textContent=m; }
+var _syncT=null;
+function pushState(){ clearTimeout(_syncT); _syncT=setTimeout(pushNow,1200); }
+function pushNow(){
+  setSync("… enregistrement");
+  fetch("/state",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(state)})
+    .then(function(r){ setSync(r.ok?"☁ enregistré":"⚠ non enregistré"); })
+    .catch(function(){ setSync("⚠ hors ligne"); });
+}
+function applyState(d){
+  state.contents=Array.isArray(d.contents)?d.contents:[];
+  state.plans=Array.isArray(d.plans)?d.plans:[];
+  state.slots=Array.isArray(d.slots)?d.slots:[];
+  state.durPlan=Number(d.durPlan)>0?Number(d.durPlan):10;
+  state.contents.forEach(function(c){ c.datePub=normalizeDate(c.datePub); });
+}
+function pullState(){
+  fetch("/state").then(function(r){ return r.ok?r.json():{}; }).then(function(d){
+    var has=d && ((d.contents&&d.contents.length)||(d.slots&&d.slots.length)||(d.plans&&d.plans.length));
+    if(has){ applyState(d); try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){} renderAll(); setSync("☁ synchronisé"); }
+    else if(state.contents.length||state.slots.length||state.plans.length){ pushNow(); }
+    else { setSync("☁ prêt"); }
+  }).catch(function(){ setSync("hors ligne (local)"); });
+}
 
 function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(function(){t.classList.remove("show");},2400); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];}); }
@@ -189,6 +216,13 @@ function toMinutes(h){ if(!h) return 0; var p=String(h).split(":"); return (pars
 function splitPipe(s){ return String(s||"").split("|").map(function(x){return x.trim();}).filter(Boolean); }
 function slotCapacity(sl){ var c=toMinutes(sl.fin)-toMinutes(sl.debut); return c>0?c:0; }
 function slotUsed(sl){ return state.plans.filter(function(p){ return p.slotId===sl.id && planActive(p); }).reduce(function(a,p){ return a+(Number(p.duree)||0); },0); }
+function pad2(n){ n=String(n); return n.length<2?("0"+n):n; }
+function normalizeDate(s){
+  s=String(s||"").trim(); if(!s) return "";
+  var m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/); if(m) return m[1]+"-"+pad2(m[2])+"-"+pad2(m[3]);
+  m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/); if(m) return m[3]+"-"+pad2(m[2])+"-"+pad2(m[1]);
+  return s;
+}
 function frDate(iso){ if(!iso) return ""; var a=String(iso).split("-"); if(a.length!==3) return iso; var d=new Date(a[0],a[1]-1,a[2]); var j=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."],m=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."]; return j[d.getDay()]+" "+parseInt(a[2],10)+" "+m[d.getMonth()]; }
 function frDateShort(iso){ if(!iso) return ""; var a=String(iso).split("-"); if(a.length!==3) return iso; var m=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."]; return parseInt(a[2],10)+" "+m[a[1]-1]; }
 function sortedSlots(){ return state.slots.slice().sort(function(a,b){ var ka=(a.date||"")+" "+(a.debut||""),kb=(b.date||"")+" "+(b.debut||""); return ka<kb?-1:(ka>kb?1:0); }); }
@@ -252,7 +286,7 @@ function importCSV(text, replace){
     var titre=g(r,cols.titre), type=g(r,cols.type);
     if(!titre&&!type) return;
     if(!titre) titre="(sans titre)";
-    var c={ id:uid(), type:type||"", titre:titre, pilier:g(r,cols.pilier), datePub:g(r,cols.date),
+    var c={ id:uid(), type:type||"", titre:titre, pilier:g(r,cols.pilier), datePub:normalizeDate(g(r,cols.date)),
             materiel:g(r,cols.mat), note:g(r,cols.note), statut:mapStatut(g(r,cols.statut))||"a_filmer" };
     newC.push(c);
     var items=splitPipe(g(r,cols.plan));
@@ -327,12 +361,11 @@ function deadlineWarnPlan(p){
 function planHTML(p){
   var c=contentById(p.contentId)||{};
   var med=medium(c.type);
-  var label=med.icon+' '+esc(c.titre||"")+(c.datePub?(' · 📅 '+esc(frDateShort(c.datePub))):"");
   return '<div class="plan'+(p.done?" done":"")+'" data-pid="'+p.id+'">'
     + '<div class="box'+(p.done?" on":"")+'" data-act="done">✓</div>'
     + '<div class="pbody">'
-      + '<div class="ptext">'+esc(p.text)+'</div>'
-      + '<div class="plabel">'+label+' '+deadlineWarnPlan(p)+'</div>'
+      + '<div class="ptext"><span class="ptxt">'+esc(p.text)+'</span> <span class="rname">'+med.icon+' '+esc(c.titre||"")+'</span></div>'
+      + '<div class="plabel">'+(c.datePub?('📅 '+esc(frDateShort(c.datePub))+' '):'')+deadlineWarnPlan(p)+'</div>'
       + '<div class="pctrl">'
         + '<select data-act="setup">'+setupOptions(p.setup)+'</select>'
         + '<select data-act="move">'+slotOptions(p.slotId)+'</select>'
@@ -448,6 +481,7 @@ function bind(){
   });
 
   document.getElementById("organize").addEventListener("click",function(){ organize(document.getElementById("fromScratch").checked); });
+  document.getElementById("clearPlan").addEventListener("click",function(){ if(confirm("Vider le planning ? Les plans repassent en « À planifier », rien n'est supprimé.")){ state.plans.forEach(function(p){ p.slotId=null; }); save(); renderAll(); toast("Planning vidé"); } });
   document.getElementById("filterSetup").addEventListener("change",function(e){ filterSetup=e.target.value; renderPlanning(); });
   document.getElementById("hideDone").addEventListener("change",function(e){ hideDone=e.target.checked; renderPlanning(); });
 
@@ -492,7 +526,7 @@ function bind(){
   document.getElementById("slDate").value=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
 }
 
-load(); bind(); renderAll(); switchTab("import");
+load(); bind(); renderAll(); switchTab("import"); pullState();
 </script>
 </body>
 </html>
