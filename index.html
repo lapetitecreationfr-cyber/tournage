@@ -105,16 +105,17 @@
   <section id="tab-import">
     <div class="card">
       <h2>Charger mon calendrier</h2>
-      <p class="small muted" style="margin:0 0 10px">CSV point-virgule. La colonne <code>plan</code> = les prises séparées par « | ». La colonne <code>materiel</code> aussi.</p>
+      <p class="small muted" style="margin:0 0 10px">Deux formats acceptés. <b>Banque de plans</b> (virgules) : une ligne = un plan, colonnes <code>Catégorie</code>, <code>Plan / action à filmer</code>, <code>Cadrage conseillé</code>, <code>Photo aussi ?</code>… <b>Réels</b> (point-virgule) : colonne <code>plan</code> = les prises séparées par « | », idem <code>materiel</code>.</p>
       <input type="file" id="csvFile" accept=".csv,text/csv">
       <div class="switch"><input type="checkbox" id="replaceCsv" checked><label for="replaceCsv" style="margin:0">Remplacer l'existant</label></div>
       <div id="csvInfo" class="small muted" style="margin-top:10px"></div>
     </div>
     <div class="card">
       <h2>Comment ça organise</h2>
-      <p class="small muted" style="margin:0 0 8px">Chaque <b>plan</b> devient une prise à filmer. L'outil devine son <b>setup</b> (atelier, salon cosy, flat lay…) d'après son texte, puis regroupe tous les plans du même setup dans un même créneau — quel que soit le réel. Le réel s'affiche en étiquette.</p>
+      <p class="small muted" style="margin:0 0 8px">Chaque <b>plan</b> devient une prise à filmer. Le <b>setup</b> vient de la colonne Catégorie (banque de plans) ou est deviné d'après le texte (réels), puis regroupe tous les plans du même setup dans un même créneau — quel que soit le réel. Le réel s'affiche en étiquette.</p>
       <p class="small muted" style="margin:0 0 10px">Les dates de publication servent d'échéances : un plan est calé dans un créneau avant la date de pub de son réel.</p>
-      <button class="btn ghost" id="dlExample">Télécharger un exemple</button>
+      <button class="btn ghost" id="dlExample">Télécharger un exemple (banque de plans)</button>
+      <button class="btn line" id="dlExample2" style="margin-top:8px">Exemple ancien format (réels)</button>
     </div>
     <div class="card">
       <h2>Réglages</h2>
@@ -151,6 +152,7 @@
       <select id="filterSetup"><option value="">Tous les setups</option></select>
     </div>
     <div class="switch" style="margin:0 0 4px"><input type="checkbox" id="hideDone"><label for="hideDone" style="margin:0">Masquer les plans filmés</label></div>
+    <div class="switch" style="margin:0 0 4px"><input type="checkbox" id="onlyPhoto"><label for="onlyPhoto" style="margin:0">Seulement ceux à photographier aussi 📷</label></div>
     <div id="planningView"></div>
   </section>
 
@@ -169,7 +171,7 @@
 
 var STORE_KEY="tournages_v3";
 var state={ contents:[], plans:[], slots:[], durPlan:10 };
-var filterSetup="", hideDone=false;
+var filterSetup="", hideDone=false, onlyPhoto=false;
 
 var C_STATUTS=[{v:"a_filmer",l:"À filmer"},{v:"reporte",l:"Reporté"},{v:"annule",l:"Annulé"},{v:"sans",l:"Sans tournage"}];
 
@@ -261,7 +263,7 @@ function parseCSV(text){
   return rows.filter(function(r){ return r.some(function(c){ return String(c).trim()!==""; }); });
 }
 function detectColumns(h){
-  var m={type:-1,titre:-1,pilier:-1,date:-1,statut:-1,note:-1,plan:-1,mat:-1};
+  var m={type:-1,titre:-1,pilier:-1,date:-1,statut:-1,note:-1,plan:-1,mat:-1,cat:-1,session:-1,fichier:-1,cadrage:-1,photo:-1};
   h.forEach(function(x,i){ var k=stripAccents(x);
     if(m.type<0&&k==="type") m.type=i;
     if(m.titre<0&&k.indexOf("titre")>-1) m.titre=i;
@@ -269,7 +271,12 @@ function detectColumns(h){
     if(m.date<0&&k.indexOf("date")>-1) m.date=i;
     if(m.statut<0&&k.indexOf("statut")>-1) m.statut=i;
     if(m.note<0&&(k.indexOf("note")>-1||k.indexOf("remarque")>-1)) m.note=i;
-    if(m.plan<0&&k==="plan") m.plan=i;
+    if(m.plan<0&&(k==="plan"||(k.indexOf("plan")===0&&k.indexOf("filmer")>-1))) m.plan=i;
+    if(m.cat<0&&k.indexOf("categorie")>-1) m.cat=i;
+    if(m.session<0&&k==="session") m.session=i;
+    if(m.fichier<0&&k.indexOf("fichier")>-1) m.fichier=i;
+    if(m.cadrage<0&&k.indexOf("cadrage")>-1) m.cadrage=i;
+    if(m.photo<0&&k.indexOf("photo")>-1) m.photo=i;
     if(m.mat<0&&(k.indexOf("materiel")>-1||k.indexOf("materiaux")>-1)) m.mat=i;
   });
   return m;
@@ -277,7 +284,9 @@ function detectColumns(h){
 function mapStatut(raw){ var s=stripAccents(raw); if(!s) return null; if(/report/.test(s)) return "reporte"; if(/annul/.test(s)) return "annule"; if(/sans/.test(s)) return "sans"; return "a_filmer"; }
 function importCSV(text, replace){
   var rows=parseCSV(text); if(!rows.length){ toast("Fichier vide"); return; }
-  var m=detectColumns(rows[0]); var hasH=(m.titre>-1||m.type>-1);
+  var m=detectColumns(rows[0]);
+  if(m.titre<0 && m.type<0 && m.plan>-1 && m.cat>-1){ importBank(rows.slice(1), m, replace); return; }
+  var hasH=(m.titre>-1||m.type>-1);
   var data,cols;
   if(hasH){ data=rows.slice(1); cols=m; } else { data=rows; cols={type:0,titre:1,pilier:2,date:6,statut:7,note:8,plan:9,mat:10}; }
   var g=function(r,i){ return i>-1&&r[i]!=null?String(r[i]).trim():""; };
@@ -302,6 +311,38 @@ function importCSV(text, replace){
   document.getElementById("csvInfo").textContent=newC.length+" réels · "+newP.length+" plans à filmer. Va dans « Planning » puis « Organiser par setup ».";
   toast(newP.length+" plans chargés");
   renderAll();
+}
+function importBank(data, m, replace){
+  var g=function(r,i){ return i>-1&&r[i]!=null?String(r[i]).trim():""; };
+  var bank=null;
+  if(!replace) bank=state.contents.find(function(c){return c.bank;});
+  var created=false;
+  if(!bank){ bank={ id:uid(), type:"Banque", titre:"Banque de plans", pilier:"", datePub:"", materiel:"", note:"", statut:"a_filmer", bank:true }; created=true; }
+  var newP=[];
+  data.forEach(function(r){
+    var txt=g(r,m.plan); if(!txt) return;
+    var st=stripAccents(g(r,m.statut));
+    var photo=/^(oui|yes|o|x|1)$/.test(stripAccents(g(r,m.photo)));
+    newP.push({ id:uid(), contentId:bank.id, text:txt, setup:g(r,m.cat)||"À définir", session:g(r,m.session),
+                fichier:g(r,m.fichier), cadrage:g(r,m.cadrage), photo:photo,
+                duree:state.durPlan, done:/^(filme|fait|termine|ok)/.test(st), slotId:null });
+  });
+  if(!newP.length){ toast("Aucun plan détecté"); return; }
+  if(replace){ state.contents=[bank]; state.plans=newP; }
+  else { if(created) state.contents.push(bank); state.plans=state.plans.concat(newP); }
+  save();
+  document.getElementById("csvInfo").textContent=newP.length+" plans chargés dans la banque. Va dans « Créneaux » puis « Planning » → « Organiser par setup ».";
+  toast(newP.length+" plans chargés");
+  renderAll();
+}
+function exampleBankCSV(){
+  var L=[
+   "Session,Catégorie,Nom fichier conseillé,Plan / action à filmer,Cadrage conseillé,Photo aussi ?,Statut",
+   "Matin — maison,Maison / cosy,COZY_OUVRIR_RIDEAUX,Ouvrir les rideaux le matin,Plan large,Oui,À filmer",
+   "Matin — boisson,Boisson / cuisine,BOISSON_VAPEUR,Tasse chaude avec vapeur,Gros plan fixe,Oui,À filmer",
+   "Après-midi — atelier,Création / couture,CREA_COUPER_TISSU,Couper le tissu aux ciseaux,Gros plan,Oui,À filmer"
+  ];
+  return "\uFEFF"+L.join("\r\n");
 }
 function exampleCSV(){
   var bom="\uFEFF";
@@ -364,8 +405,8 @@ function planHTML(p){
   return '<div class="plan'+(p.done?" done":"")+'" data-pid="'+p.id+'">'
     + '<div class="box'+(p.done?" on":"")+'" data-act="done">✓</div>'
     + '<div class="pbody">'
-      + '<div class="ptext"><span class="ptxt">'+esc(p.text)+'</span> <span class="rname">'+med.icon+' '+esc(c.titre||"")+'</span></div>'
-      + '<div class="plabel">'+(c.datePub?('📅 '+esc(frDateShort(c.datePub))+' '):'')+deadlineWarnPlan(p)+'</div>'
+      + '<div class="ptext"><span class="ptxt">'+esc(p.text)+'</span>'+(c.bank?'':' <span class="rname">'+med.icon+' '+esc(c.titre||"")+'</span>')+(p.photo?' <span class="pchip">📷 photo</span>':'')+'</div>'
+      + '<div class="plabel">'+(p.cadrage?('🎯 '+esc(p.cadrage)+' '):'')+(p.fichier?('<code>'+esc(p.fichier)+'</code> '):'')+(p.session?('<span class="pchip">'+esc(p.session)+'</span> '):'')+(c.datePub?('📅 '+esc(frDateShort(c.datePub))+' '):'')+deadlineWarnPlan(p)+'</div>'
       + '<div class="pctrl">'
         + '<select data-act="setup">'+setupOptions(p.setup)+'</select>'
         + '<select data-act="move">'+slotOptions(p.slotId)+'</select>'
@@ -379,7 +420,7 @@ function groupBySetup(plans){
   var map={}; plans.forEach(function(p){ var k=p.setup||"À définir"; (map[k]=map[k]||[]).push(p); });
   return map;
 }
-function passFilter(p){ if(filterSetup && p.setup!==filterSetup) return false; if(hideDone && p.done) return false; return true; }
+function passFilter(p){ if(filterSetup && p.setup!==filterSetup) return false; if(hideDone && p.done) return false; if(onlyPhoto && !p.photo) return false; return true; }
 
 function renderImport(){ document.getElementById("durPlan").value=state.durPlan; }
 function renderSlots(){
@@ -428,6 +469,12 @@ function renderReels(){
   if(!state.contents.length){ host.innerHTML='<div class="empty">Aucun réel. Charge un CSV ou ajoute-en un.</div>'; return; }
   host.innerHTML=state.contents.map(function(c){
     var plans=state.plans.filter(function(p){return p.contentId===c.id;});
+    if(c.bank){
+      var nd=plans.filter(function(p){return p.done;}).length;
+      return '<div class="card" data-cid="'+c.id+'"><div class="rtitle">🎬 '+esc(c.titre)+'</div>'
+        +'<div class="sub">'+plans.length+' plans · '+nd+' filmés. Les plans se gèrent dans l\'onglet Planning (setup, créneau, durée).</div>'
+        +'<button class="mini" data-act="delcontent" style="margin-top:10px">Supprimer la banque</button></div>';
+    }
     var planRows=plans.map(function(p){
       return '<div class="planline" data-pid="'+p.id+'">'
         +'<input class="pt" data-cf="text" value="'+esc(p.text)+'" placeholder="texte du plan">'
@@ -461,7 +508,9 @@ function bind(){
   Array.prototype.forEach.call(document.querySelectorAll(".tabs button"),function(b){ b.addEventListener("click",function(){ switchTab(b.getAttribute("data-tab")); }); });
 
   document.getElementById("csvFile").addEventListener("change",function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ importCSV(r.result, document.getElementById("replaceCsv").checked); e.target.value=""; }; r.readAsText(f,"UTF-8"); });
-  document.getElementById("dlExample").addEventListener("click",function(){ var b=new Blob([exampleCSV()],{type:"text/csv;charset=utf-8"}); var a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="exemple_tournage.csv"; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500); });
+  function dlCSV(txt,name){ var b=new Blob([txt],{type:"text/csv;charset=utf-8"}); var a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500); }
+  document.getElementById("dlExample").addEventListener("click",function(){ dlCSV(exampleBankCSV(),"exemple_banque_plans.csv"); });
+  document.getElementById("dlExample2").addEventListener("click",function(){ dlCSV(exampleCSV(),"exemple_tournage.csv"); });
   document.getElementById("durPlan").addEventListener("change",function(e){ var v=parseInt(e.target.value,10); state.durPlan=v>0?v:10; e.target.value=state.durPlan; save(); });
   document.getElementById("wipe").addEventListener("click",function(){ if(confirm("Tout effacer ?")){ state.contents=[]; state.plans=[]; state.slots=[]; save(); renderAll(); toast("Effacé"); } });
 
@@ -484,6 +533,7 @@ function bind(){
   document.getElementById("clearPlan").addEventListener("click",function(){ if(confirm("Vider le planning ? Les plans repassent en « À planifier », rien n'est supprimé.")){ state.plans.forEach(function(p){ p.slotId=null; }); save(); renderAll(); toast("Planning vidé"); } });
   document.getElementById("filterSetup").addEventListener("change",function(e){ filterSetup=e.target.value; renderPlanning(); });
   document.getElementById("hideDone").addEventListener("change",function(e){ hideDone=e.target.checked; renderPlanning(); });
+  document.getElementById("onlyPhoto").addEventListener("change",function(e){ onlyPhoto=e.target.checked; renderPlanning(); });
 
   var pv=document.getElementById("planningView");
   pv.addEventListener("click",function(e){
@@ -519,7 +569,7 @@ function bind(){
     var cardEl=e.target.closest("[data-cid]"); var c=cardEl?contentById(cardEl.getAttribute("data-cid")):null;
     if(act==="addplan"&&c){ state.plans.push({id:uid(),contentId:c.id,text:"Nouveau plan",setup:"À définir",duree:state.durPlan,done:false,slotId:null}); save(); renderReels(); }
     else if(act==="delplan"){ var pe=e.target.closest("[data-pid]"); if(pe&&confirm("Supprimer ce plan ?")){ state.plans=state.plans.filter(function(x){return x.id!==pe.getAttribute("data-pid");}); save(); renderReels(); } }
-    else if(act==="delcontent"&&c){ if(confirm("Supprimer « "+c.titre+" » et ses plans ?")){ state.plans=state.plans.filter(function(p){return p.contentId!==c.id;}); state.contents=state.contents.filter(function(x){return x.id!==c.id;}); save(); renderAll(); } }
+    else if(act==="delcontent"&&c){ if(confirm("Supprimer « "+c.titre+" » et ses "+(c.bank?"plans":"plans")+" ?")){ state.plans=state.plans.filter(function(p){return p.contentId!==c.id;}); state.contents=state.contents.filter(function(x){return x.id!==c.id;}); save(); renderAll(); } }
   });
 
   var t=new Date();
