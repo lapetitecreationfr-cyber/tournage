@@ -94,14 +94,28 @@
   <header>
     <h1><span class="emo">🎬</span>Mes tournages <span id="syncStatus" style="font-weight:500;font-size:12px;color:var(--muted)"></span></h1>
     <div class="tabs">
-      <button data-tab="import" class="on">Import</button>
+      <button data-tab="seance" class="on">Ma séance</button><button data-tab="import">Import</button>
       <button data-tab="creneaux">Créneaux</button>
       <button data-tab="planning">Planning</button>
       <button data-tab="reels">Réels</button>
     </div>
   </header>
 
-  <!-- IMPORT -->
+  <!-- SÉANCE -->
+<section id="tab-seance">
+ <div class="card"><h2>🌙 Préparer ma séance</h2>
+ <label class="fld">Jour de tournage</label><input type="date" id="ssDate">
+ <label class="fld">Setup</label><select id="ssSetup"></select>
+ <label class="fld">Temps disponible (minutes)</label><input type="number" id="ssTime" min="1" value="90">
+ <label class="fld">Installation et rangement (minutes)</label><input type="number" id="ssPrep" min="0" value="15">
+ <button class="btn" id="ssSuggest" style="margin-top:12px">✨ Me proposer les plans</button>
+ <div id="ssCandidates"></div>
+ <button class="btn ghost hidden" id="ssSave" style="margin-top:10px">Valider ma séance</button>
+ </div>
+ <div id="ssCurrent"></div>
+ <div class="card"><h2>🗂️ Réserve de plans</h2><div id="ssReserve"></div></div>
+</section>
+<!-- IMPORT -->
   <section id="tab-import">
     <div class="card">
       <h2>Charger mon calendrier</h2>
@@ -286,6 +300,8 @@ function importCSV(text, replace){
   var rows=parseCSV(text); if(!rows.length){ toast("Fichier vide"); return; }
   var m=detectColumns(rows[0]);
   if(m.titre<0 && m.type<0 && m.plan>-1 && m.cat>-1){ importBank(rows.slice(1), m, replace); return; }
+  var si=rows[0].findIndex(function(x){return stripAccents(x)==="setup";});
+  if(m.titre<0 && m.type<0 && m.plan>-1 && si>-1){ importSimplePlans(rows.slice(1),m.plan,si,replace); return; }
   var hasH=(m.titre>-1||m.type>-1);
   var data,cols;
   if(hasH){ data=rows.slice(1); cols=m; } else { data=rows; cols={type:0,titre:1,pilier:2,date:6,statut:7,note:8,plan:9,mat:10}; }
@@ -494,10 +510,10 @@ function renderReels(){
     +'</div>';
   }).join("");
 }
-function renderAll(){ renderImport(); renderSlots(); renderPlanning(); renderReels(); }
+function renderAll(){ renderImport(); renderSlots(); renderPlanning(); renderReels(); renderSession(); }
 
 function switchTab(name){
-  ["import","creneaux","planning","reels"].forEach(function(t){ document.getElementById("tab-"+t).classList.toggle("hidden",t!==name); });
+  ["seance","import","creneaux","planning","reels"].forEach(function(t){ document.getElementById("tab-"+t).classList.toggle("hidden",t!==name); });
   Array.prototype.forEach.call(document.querySelectorAll(".tabs button"),function(b){ b.classList.toggle("on",b.getAttribute("data-tab")===name); });
 }
 
@@ -576,7 +592,85 @@ function bind(){
   document.getElementById("slDate").value=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
 }
 
-load(); bind(); renderAll(); switchTab("import"); pullState();
+
+/* Assistant de séance : aucune modification destructive de l'ancien planning. */
+var sessionSelection=[];
+function importSimplePlans(rows,pi,si,replace){
+ var bank=state.contents.find(function(c){return c.bank;});
+ if(!bank){bank={id:uid(),type:"Banque",titre:"Banque de plans",pilier:"",datePub:"",materiel:"",note:"",statut:"a_filmer",bank:true};state.contents.push(bank);}
+ var seen={};state.plans.forEach(function(p){seen[stripAccents(p.text)+"|"+stripAccents(p.setup)]=true;});
+ var count=0;
+ rows.forEach(function(row){
+  var name=String(row[pi]||"").trim(),setup=String(row[si]||"").trim();
+  if(!name||!setup)return;
+  var key=stripAccents(name)+"|"+stripAccents(setup);
+  if(seen[key])return;
+  seen[key]=true;count++;
+  state.plans.push({id:uid(),contentId:bank.id,text:name,setup:setup,duree:state.durPlan,done:false,slotId:null});
+ });
+ save();renderAll();document.getElementById("csvInfo").textContent=count+" nouveaux plans ajoutés (doublons ignorés, avancement conservé).";toast(count+" plans ajoutés");
+}
+function sessionCandidates(){
+ var setup=document.getElementById("ssSetup").value;
+ return state.plans.filter(function(p){return p.setup===setup&&!p.done&&!p.slotId&&planActive(p);});
+}
+function renderSession(){
+ var sel=document.getElementById("ssSetup"),old=sel.value;
+ var setups=setupsInUse().filter(function(s){return s!=="À définir";});
+ sel.innerHTML=setups.map(function(s){return '<option value="'+esc(s)+'">'+esc(s)+'</option>';}).join("");
+ if(setups.indexOf(old)>=0)sel.value=old;
+ var current=state.slots.filter(function(s){return s.sessionSetup&&!s.indispo;}).sort(function(a,b){return (a.date+a.debut).localeCompare(b.date+b.debut);});
+ var box=document.getElementById("ssCurrent");
+ box.innerHTML=current.map(function(sl){
+ var plans=state.plans.filter(function(p){return p.slotId===sl.id;});
+ var items=plans.map(function(p){return '<div class="plan" data-splan="'+esc(p.id)+'"><button class="box'+(p.done?' on':'')+'" data-sdone="'+esc(p.id)+'">'+(p.done?'✓':'')+'</button><div class="pbody"><div class="ptext">'+esc(p.text)+'</div><div class="small muted">'+(p.duree||state.durPlan)+' min</div></div></div>';}).join("");
+ var accessories=plans.flatMap(function(p){return splitPipe(p.accessoires||"").concat(splitPipe((contentById(p.contentId)||{}).materiel||""));});
+ var unique=Array.from(new Set(accessories.concat(sl.extraAccessories||[])));
+ return '<div class="card"><h2>🎬 '+esc(frDate(sl.date))+' · '+esc(sl.sessionSetup)+'</h2><div class="small muted">'+esc(sl.debut)+' – '+esc(sl.fin)+' · '+plans.filter(function(p){return p.done;}).length+'/'+plans.length+' filmés</div>'
+ +'<h2 style="margin-top:14px">🎒 À préparer la veille</h2>'
+ +(unique.length?unique.map(function(a,i){return '<label class="switch"><input type="checkbox" data-access="'+esc(sl.id)+'" data-access-index="'+i+'" '+((sl.checkedAccessories||[]).indexOf(a)>=0?'checked':'')+'> '+esc(a)+'</label>';}).join(""):'<p class="small muted">Complète les accessoires de chaque plan ci-dessous.</p>')
+ +'<label class="fld">Ajouter du matériel à préparer</label><div class="row"><input placeholder="Trépied, produit, décor…" id="extra-'+esc(sl.id)+'"><button class="mini" data-addextra="'+esc(sl.id)+'">Ajouter</button></div>'
+ +'<div class="small muted" style="margin-top:10px">Coche chaque plan une fois filmé.</div>'+items
+ +'<button class="btn line" data-unplan="'+esc(sl.id)+'" style="margin-top:10px">Reporter les plans non filmés</button></div>';
+ }).join("")||'<div class="card"><div class="empty">Aucune séance préparée. Choisis un setup et ton temps disponible.</div></div>';
+ var reserve=state.plans.filter(function(p){return !p.done&&!p.slotId&&planActive(p);});
+ document.getElementById("ssReserve").innerHTML='<p class="small muted">'+reserve.length+' plans disponibles pour plus tard.</p>'+Object.entries(reserve.reduce(function(a,p){(a[p.setup]||(a[p.setup]=[])).push(p);return a;},{})).map(function(e){return '<details><summary>'+esc(e[0])+' · '+e[1].length+' plans</summary><div class="small muted">'+e[1].map(function(p){return esc(p.text);}).join('<br>')+'</div></details>';}).join("");
+}
+function suggestSession(){
+ var setup=document.getElementById("ssSetup").value;
+ var time=Number(document.getElementById("ssTime").value),prep=Number(document.getElementById("ssPrep").value);
+ if(!setup||!(time>0)||prep<0||prep>=time){toast("Vérifie le setup et le temps disponible");return;}
+ var candidates=sessionCandidates(),remaining=time-prep;sessionSelection=[];
+ candidates.forEach(function(p){var d=Number(p.duree)||state.durPlan;if(d<=remaining){sessionSelection.push(p.id);remaining-=d;}});
+ document.getElementById("ssCandidates").innerHTML='<h2 style="margin-top:15px">Plans proposés · '+sessionSelection.length+'</h2><p class="small muted">'+(time-prep-remaining)+' min de tournage + '+prep+' min d’installation/rangement · '+remaining+' min de marge</p>'
+ +candidates.map(function(p){return '<label class="plan"><input type="checkbox" style="width:auto;margin-top:5px" data-pick="'+esc(p.id)+'" '+(sessionSelection.indexOf(p.id)>=0?'checked':'')+'><span class="pbody">'+esc(p.text)+' <span class="small muted">· '+(p.duree||state.durPlan)+' min</span><label class="fld">Accessoires (séparés par |)</label><input data-gear="'+esc(p.id)+'" value="'+esc(p.accessoires||"")+'" placeholder="Trépied | Livre | Bouillotte"></span></label>';}).join("");
+ document.getElementById("ssSave").classList.toggle("hidden",!candidates.length);
+ if(!candidates.length)toast("Aucun plan disponible pour ce setup");
+}
+function initSession(){
+ var d=new Date();d.setDate(d.getDate()+1);
+ document.getElementById("ssDate").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ document.getElementById("ssSuggest").addEventListener("click",suggestSession);
+ document.getElementById("ssCandidates").addEventListener("change",function(e){if(e.target.dataset.gear){var p=planById(e.target.dataset.gear);if(p){p.accessoires=e.target.value;save();}}});
+ document.getElementById("ssSave").addEventListener("click",function(){
+ var date=document.getElementById("ssDate").value,setup=document.getElementById("ssSetup").value;
+ var time=Number(document.getElementById("ssTime").value),prep=Number(document.getElementById("ssPrep").value);
+ var chosen=Array.from(document.querySelectorAll("[data-pick]:checked")).map(function(x){return planById(x.dataset.pick);}).filter(Boolean);
+ var used=chosen.reduce(function(n,p){return n+(Number(p.duree)||state.durPlan);},0);
+ if(!date||!chosen.length||used+prep>time){toast("Sélection vide ou durée dépassée");return;}
+ var sl={id:uid(),date:date,debut:"09:00",fin:""+String(Math.floor((540+time)/60)%24).padStart(2,"0")+":"+String((540+time)%60).padStart(2,"0"),label:"Séance préparée",indispo:false,sessionSetup:setup};
+ state.slots.push(sl);chosen.forEach(function(p){p.slotId=sl.id;});
+ save();renderAll();document.getElementById("ssCandidates").innerHTML="";document.getElementById("ssSave").classList.add("hidden");toast("Séance prête !");
+ });
+ document.getElementById("ssCurrent").addEventListener("click",function(e){
+ var id=e.target.dataset.sdone;if(id){var p=planById(id);if(p){p.done=!p.done;save();renderAll();}return;}
+ var un=e.target.dataset.unplan;if(un){state.plans.forEach(function(p){if(p.slotId===un&&!p.done)p.slotId=null;});state.slots=state.slots.filter(function(s){return s.id!==un;});save();renderAll();return;}
+ var ex=e.target.dataset.addextra;if(ex){var input=document.getElementById("extra-"+ex),value=input.value.trim();if(value){var sl=state.slots.find(function(s){return s.id===ex;});if(sl){sl.extraAccessories=sl.extraAccessories||[];sl.extraAccessories.push(value);save();renderAll();}}}
+ });
+ document.getElementById("ssCurrent").addEventListener("change",function(e){if(!e.target.dataset.access)return;var sl=state.slots.find(function(s){return s.id===e.target.dataset.access;});if(!sl)return;var plans=state.plans.filter(function(p){return p.slotId===sl.id;});var arr=Array.from(new Set(plans.flatMap(function(p){return splitPipe(p.accessoires||"").concat(splitPipe((contentById(p.contentId)||{}).materiel||""));})));var v=arr[Number(e.target.dataset.accessIndex)];sl.checkedAccessories=sl.checkedAccessories||[];sl.checkedAccessories=e.target.checked?Array.from(new Set(sl.checkedAccessories.concat(v))):sl.checkedAccessories.filter(function(x){return x!==v;});save();});
+}
+
+load(); bind(); initSession(); renderAll(); switchTab("seance"); pullState();
 </script>
 </body>
 </html>
