@@ -20,15 +20,27 @@ async function remoteRequest(method,body){
 async function startSync(){
  try{
   const rows=await remoteRequest("GET");
+  const localHasData=(db.plans||[]).length>0||(db.sessions||[]).length>0;
   if(rows.length&&rows[0].data){
-   // Les données distantes font foi si elles existent déjà.
    const remote=rows[0].data;
    if(!Array.isArray(remote.plans)||!Array.isArray(remote.sessions))throw new Error("Données distantes invalides");
-   if(db.plans.length&&!localStorage.getItem(KEY+"_migrated")){localStorage.setItem(KEY+"_backup_before_sync",JSON.stringify(db));syncLabel("☁️ Sauvegarde locale conservée avant synchronisation")}
-   db=remote;localStorage.setItem(KEY,JSON.stringify(db));render();
-  }else{
-   // Premier branchement : migrer la banque déjà enregistrée sur cet appareil.
+   const remoteHasData=remote.plans.length>0||remote.sessions.length>0;
+   if(localHasData&&!remoteHasData){
+    localStorage.setItem(KEY+"_backup_before_sync",JSON.stringify(db));
+    await remoteRequest("PATCH",{data:db});
+    syncLabel("☁️ Plans locaux transférés dans Supabase");
+   }else{
+    if(localHasData&&!localStorage.getItem(KEY+"_migrated"))
+      localStorage.setItem(KEY+"_backup_before_sync",JSON.stringify(db));
+    db=remote;localStorage.setItem(KEY,JSON.stringify(db));render();
+   }
+  }else if(localHasData){
+   localStorage.setItem(KEY+"_backup_before_sync",JSON.stringify(db));
    await remoteRequest("POST",{id:SYNC_ID,data:db});
+   syncLabel("☁️ Plans locaux transférés dans Supabase");
+  }else{
+   syncLabel("☁️ Supabase connecté. Ouvre d'abord l'ordinateur contenant tes plans pour les transférer.");
+   return;
   }
   localStorage.setItem(KEY+"_migrated","1");syncReady=true;syncLabel("☁️ Synchronisé avec Supabase");
   setInterval(refreshRemote,15000);
